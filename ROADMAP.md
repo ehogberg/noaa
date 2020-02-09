@@ -8,9 +8,9 @@
 - ~~Define noaa cutoff date env var~~
 
 ### 1: Mark leads eligible for NOAA generation
-- Identify leads requiring noaas (rejection code of 623, no noaa previously created and lead created >= noaa cutoff date
-- Create noaa records for eligible leads
-- Modify main to call identify function
+- ~~Identify leads requiring noaas (rejection code of 623, no noaa previously created and lead created >= noaa cutoff date~~
+- ~~Create noaa records for eligible leads~~
+- ~~Build a driver function to identify leads needing noaas and generate noaa records for them.~~
 
 ### 2: Generate text for a NOAA
 - Define a template - No visine
