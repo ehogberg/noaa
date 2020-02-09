@@ -1,0 +1,14 @@
+{{meta.formatted-date}}
+
+{{request.first-name}} {{request.last-name}}
+{{request.street-address}}
+{{request.city}}, {{request.state}}  {{request.zip-code}}
+
+Dear {{request.first-name}}:
+
+We're sorry we aren't going to be able to provide you a loan.  Clarity did
+not like your profile and we'll have to pass.
+
+Have a nice day,
+
+-The Management-

@@ -3,15 +3,19 @@
   :url "http://example.com/FIXME"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
             :url "https://www.eclipse.org/legal/epl-2.0/"}
-  :dependencies [[clojure.java-time "0.3.2"]
+  :dependencies [[camel-snake-kebab "0.4.1"]
+                 [cheshire "5.10.0"]
+                 [clojure.java-time "0.3.2"]
                  [com.fzakaria/slf4j-timbre "0.3.19"]
                  [com.taoensso/timbre "4.10.0"]
                  [environ "1.1.0"]
                  [hikari-cp "2.10.0"]
                  [migratus "1.2.7"]
+                 [nearinfinity/clj-faker "0.1.1"]
                  [org.clojure/clojure "1.10.0"]
                  [org.postgresql/postgresql "42.2.10"]
-                 [seancorfield/next.jdbc "1.0.13"]]
+                 [seancorfield/next.jdbc "1.0.13"]
+                 [selmer "1.12.18"]]
   :plugins [[lein-environ "1.1.0"]
             [migratus-lein "0.7.3"]]
   :main ^:skip-aot noaa.core

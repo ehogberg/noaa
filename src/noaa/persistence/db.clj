@@ -34,8 +34,20 @@
   (sql/get-by-id @ds :leads_noaas id))
 
 
+
 (defn all-leads []
   (jdbc/execute! @ds ["select * from leads"]))
+
+
+(defn create-fake-lead []
+  (let [lead (fake-lead)
+        id (UUID/randomUUID)]
+    (jdbc/execute! @ds
+                   ["insert into leads
+                    (id,request,status)
+                    values (?, ?::json,623)"
+                    id
+                    (:request lead)])))
 
 
 (defn create-noaa-record [lead-id]
@@ -44,6 +56,15 @@
                 :lead_id lead-id
                 :noaa_identified_at (offset-date-time)}))
 
+
+(defn update-noaa-text [noaa-id send-to noaa-text template-type]
+  (sql/update! @ds :leads_noaas
+               {:noaa_text noaa-text
+                :noaa_template_type template-type
+                :noaa_destination_email send-to
+                :noaa_generated_at (offset-date-time)
+                :updated_at (offset-date-time)}
+               {:id noaa-id}))
 
 
 (defn find-leads-needing-noaas
@@ -64,13 +85,25 @@
    so we take this approach.  Definitely a IMPROVEME opportunity for
    the future."
   []
-  (sql/query @ds ["select l.id as lead_id from leads l left join leads_noaas n on l.id = n.lead_id
+  (sql/query @ds ["select l.id as lead_id 
+                   from leads l left join leads_noaas n on l.id = n.lead_id
                    where n.noaa_identified_at is null
                      and l.status = 623
                      and l.created_date >= ?"
                   (local-date
                    "yyyy-MM-dd"
                    (env :leads-noaa-cutoff-date))]))
+
+
+(defn find-noaas-needing-generation
+  "Any NOAA with a null noaa_generated_at date has not
+   had its message generated successfully as of yet."
+  []
+  (sql/query @ds ["select n.*,
+                          l.*
+                  from leads_noaas n
+                  inner join leads l on l.id = n.lead_id
+                  where n.noaa_generated_at is null"]))
 
 
 (comment
@@ -83,23 +116,10 @@
     (create-noaa-record id)
     )
   (find-leads-needing-noaas)
+  (find-noaas-needing-generation)
+  (create-fake-lead)
+  (-> (all-leads)
+      first
+      :leads/request
+      .getValue)
   )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
