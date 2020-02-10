@@ -3,7 +3,8 @@
             [hikari-cp.core :refer :all]
             [java-time :refer [local-date offset-date-time]]
             [next.jdbc :as jdbc]
-            [next.jdbc.sql :as sql])
+            [next.jdbc.sql :as sql]
+            [noaa.util.fake :refer [fake-lead]])
   (:import (java.util UUID)))
 
 
@@ -50,19 +51,26 @@
                     (:request lead)])))
 
 
-(defn create-noaa-record [lead-id]
+(defn create-noaa-record! [lead-id]
   (sql/insert! @ds :leads_noaas
                {:id (UUID/randomUUID)
                 :lead_id lead-id
                 :noaa_identified_at (offset-date-time)}))
 
 
-(defn update-noaa-text [noaa-id send-to noaa-text template-type]
+(defn update-noaa-text! [noaa-id send-to noaa-text template-type]
   (sql/update! @ds :leads_noaas
                {:noaa_text noaa-text
                 :noaa_template_type template-type
                 :noaa_destination_email send-to
                 :noaa_generated_at (offset-date-time)
+                :updated_at (offset-date-time)}
+               {:id noaa-id}))
+
+
+(defn update-noaa-as-sent! [noaa-id]
+  (sql/update! @ds :leads_noaas
+               {:noaa_transmitted_at (offset-date-time)
                 :updated_at (offset-date-time)}
                {:id noaa-id}))
 
@@ -86,7 +94,8 @@
    the future."
   []
   (sql/query @ds ["select l.id as lead_id 
-                   from leads l left join leads_noaas n on l.id = n.lead_id
+                   from leads l left join leads_noaas n
+                   on l.id = n.lead_id
                    where n.noaa_identified_at is null
                      and l.status = 623
                      and l.created_date >= ?"
@@ -106,6 +115,11 @@
                   where n.noaa_generated_at is null"]))
 
 
+(defn find-noaas-needing-sending []
+  (sql/query @ds ["select * from leads_noaas
+                   where noaa_transmitted_at is null
+                     and noaa_generated_at is not null"]))
+
 (comment
   (test-ds)
   (create-dummy-lead)
@@ -122,4 +136,15 @@
       first
       :leads/request
       .getValue)
+
+  (find-noaas-needing-sending)
   )
+
+
+
+
+
+
+
+
+

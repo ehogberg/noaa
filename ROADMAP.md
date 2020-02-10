@@ -31,12 +31,14 @@
 
 
 ### 3:  Transmit a NOAA
-- Load generated noaas from noaa table
-- Define a transmission protocol 
-- implement file system based transmission
-- Transmit noaa
-- Update noaa attributed to reflect transmission
-- Implement a email based transmission
+- ~~Load generated noaas from noaa table~~
+- ~~Define a transmission protocol~~
+- ~~implement file system based transmission~~
+- ~~Transmit noaa~~
+- ~~Update noaa attributed to reflect transmission~~
+- ~~Implement a email based transmission~~
+- ~~Define a Leiningen task to kick off the identification pass.~~
+- ~~Define a Leiningen task to kick off the generation pass.~~
 
 
 
@@ -67,9 +69,8 @@
 
 
 ### BACKLOG
-- Define a Leiningen task to kick off the identification pass.
-- Define a Leiningen task to kick off the generation pass.
 - Move Migratus operations into a setting that honors environment configs.
 - Identify what we actually need from Clarity and pluck it from the report as part of attach-clarity-report in generation.
 - Get the actual text used for the templates
 - Include originating bank as a qualifier for template choice
+- Store delivery status as part of NOAA during delivery pass

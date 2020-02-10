@@ -6,6 +6,7 @@
   :dependencies [[camel-snake-kebab "0.4.1"]
                  [cheshire "5.10.0"]
                  [clojure.java-time "0.3.2"]
+                 [com.draines/postal "2.0.3"]
                  [com.fzakaria/slf4j-timbre "0.3.19"]
                  [com.taoensso/timbre "4.10.0"]
                  [environ "1.1.0"]
@@ -19,6 +20,9 @@
   :plugins [[lein-environ "1.1.0"]
             [migratus-lein "0.7.3"]]
   :main ^:skip-aot noaa.core
+  :aliases {"generate-noaas" ["run" "-m" "noaa.core" "generate-noaas"]
+            "identify-noaas" ["run" "-m" "noaa.core" "identify-noaas"]
+            "send-noaas" ["run" "-m" "noaa.core" "send-noaas"]}
   :migratus {:store :database
              :migration-dir "migrations"
              :db {:classname "com.postgresql.jdbc.Driver"
