@@ -3,7 +3,12 @@
             [postal.core :as postal]))
 
 
-(defn _deliver-noaa [{:leads_noaas/keys [noaa_text] :as noaa}]
+(defn _deliver-noaa
+  "Transmits a NOAA via email to a sandbox user
+   (the user specified in the NOAA is ignored.)
+   Useful for testing that mail does what you expect
+   without accidentally spamming people."
+  [{:leads_noaas/keys [noaa_text] :as noaa}]
   (assoc noaa :delivery-status
          (postal/send-message
           {:host (env :smtp-delivery-host)
@@ -14,7 +19,7 @@
            :tls (env :smtp-delivery-tls)}
           {:from (env :smtp-delivery-sender)
            :to (env :smtp-delivery-sandbox-recipient)
-           :subject "Notice of adverse action on a recent OppLoans application."
+           :subject "Notice of adverse action on a recent application."
            :body noaa_text})))
 
 

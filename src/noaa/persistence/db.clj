@@ -17,16 +17,7 @@
 (defonce ds (delay (make-datasource ds-options)))
 
 
-(defn test-ds []
-  (let [rows (jdbc/execute! @ds ["select 1 as test"])]
-    (println rows)))
-
-
-(defn create-dummy-lead []
-  (sql/insert! @ds :leads {:id (UUID/randomUUID)
-                           :status 623}))
-
-
+;; Convenience finders for leads and noaas.
 (defn find-lead [id]
   (sql/get-by-id @ds :leads id))
 
@@ -35,12 +26,12 @@
   (sql/get-by-id @ds :leads_noaas id))
 
 
-
-(defn all-leads []
-  (jdbc/execute! @ds ["select * from leads"]))
-
-
-(defn create-fake-lead []
+(defn create-fake-lead
+  "Convenience method to generate a fake
+   Clarity denial lead.  DO NOT invoke
+   this function if your database connection
+   is to any sort of live db."
+  []
   (let [lead (fake-lead)
         id (UUID/randomUUID)]
     (jdbc/execute! @ds
@@ -51,14 +42,27 @@
                     (:request lead)])))
 
 
-(defn create-noaa-record! [lead-id]
+(defn create-noaa-record!
+  "Given a lead id, creates a new uninitialized
+   NOAA in the attached db.  This NOAA will be
+   picked up by the next generate-lead process and
+   have its notice message generated."
+  [lead-id]
   (sql/insert! @ds :leads_noaas
                {:id (UUID/randomUUID)
                 :lead_id lead-id
                 :noaa_identified_at (offset-date-time)}))
 
 
-(defn update-noaa-text! [noaa-id send-to noaa-text template-type]
+(defn update-noaa-text!
+  "Called as part of the generate-noaas processing,
+   given a noaa ID, updates the NOAA to include
+   message text, the sending destination and template
+   type used to generate the message.  Also updates
+   the noaa_generated_at attribute, which means that
+   the noaa will be included in the next send-noaas 
+   processing run."
+  [noaa-id send-to noaa-text template-type]
   (sql/update! @ds :leads_noaas
                {:noaa_text noaa-text
                 :noaa_template_type template-type
@@ -68,7 +72,12 @@
                {:id noaa-id}))
 
 
-(defn update-noaa-as-sent! [noaa-id]
+(defn update-noaa-as-sent!
+  "Called as part of send-noaas processing, updates
+   the noaa with some audit information relating to
+   delivery of the noaa message.  After this update,
+   the noaa processing is considered complete."
+  [noaa-id]
   (sql/update! @ds :leads_noaas
                {:noaa_transmitted_at (offset-date-time)
                 :updated_at (offset-date-time)}
@@ -105,8 +114,8 @@
 
 
 (defn find-noaas-needing-generation
-  "Any NOAA with a null noaa_generated_at date has not
-   had its message generated successfully as of yet."
+  "Retrieves any NOAA with a null noaa_generated_at date (has not
+   had its message generated successfully as of yet.)"
   []
   (sql/query @ds ["select n.*,
                           l.*
@@ -115,28 +124,17 @@
                   where n.noaa_generated_at is null"]))
 
 
-(defn find-noaas-needing-sending []
+(defn find-noaas-needing-sending
+  "Retrieves any noaa which has completed generation processing but
+   has not yet been delivered to its intended recipient."
+  []
   (sql/query @ds ["select * from leads_noaas
                    where noaa_transmitted_at is null
                      and noaa_generated_at is not null"]))
 
 (comment
-  (test-ds)
-  (create-dummy-lead)
-  (create-dummy-lead)
-  (let [id (-> (all-leads)
-               first
-               :leads/id)]
-    (create-noaa-record id)
-    )
   (find-leads-needing-noaas)
   (find-noaas-needing-generation)
-  (create-fake-lead)
-  (-> (all-leads)
-      first
-      :leads/request
-      .getValue)
-
   (find-noaas-needing-sending)
   )
 

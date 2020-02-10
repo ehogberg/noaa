@@ -6,7 +6,13 @@
   (:gen-class))
 
 
-(defn identify-noaas []
+(defn identify-noaas
+  "Scans the specified leads database looking for leads
+   which have been Clarity failed but have not previously
+   generated a noaa.  For each matching lead, a noaa record
+   is created, which will be processed in the next step of
+   noaa handling, generate-noaas."
+  []
   (try
     (info "Beginning NOAA identification")
     (doseq [{:leads/keys [lead_id]} (db/find-leads-needing-noaas)]
@@ -20,7 +26,12 @@
       (info "NOAA identification complete."))))
 
 
-(defn generate-noaas []
+(defn generate-noaas
+  "Finds all noaas which have not be marked as having been processed by
+   a prior generate-noaas run.  Each of these has its noaa message
+   created by the noaa templating system, the generated message is then
+   stored in the noaa for use in the final processing step, delivery."
+  []
   (try
     (info "Beginning NOAA generation")
     (doseq [{:leads_noaas/keys [id] :as noaa} (db/find-noaas-needing-generation)]
@@ -40,7 +51,11 @@
       (info "NOAA generation complete"))))
 
 
-(defn send-noaas []
+(defn send-noaas
+  "The final step of noaa processing.  All noaas generated but not successfully
+   delivered to recipients as part of a prior delivery job have their messages
+   delivered (typically by email) to their intended recipient."
+  []
   (try
     (info "Beginning NOAA delivery")
     (doseq [{:leads_noaas/keys [id] :as noaa} (db/find-noaas-needing-sending)]
