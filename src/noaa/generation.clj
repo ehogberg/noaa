@@ -125,19 +125,21 @@
   "Does the detailed extraction of relevant Clarity
    data from the (much larger) complete report."
   [report]
-  {:fraud_score (get-in report
+  {:clarity-generation-date (get-in report [:xml_response :inquiry
+                                            :product_date])
+   :fraud-score (get-in report
                         [:xml_response :clear_credit_risk :score])
-   :fraud_reason_code_description (get-in report [:xml_response
+   :fraud-reason-code-description (get-in report [:xml_response
                                                   :clear_credit_risk
                                                   :reason_code_description])
-   :ccr_code (get-in report [:xml_response :clear_credit_risk :score])
-   :ccr_reason_code_description (get-in report [:xml_response
+   :ccr-code (get-in report [:xml_response :clear_credit_risk :score])
+   :ccr-reason-code-description (get-in report [:xml_response
                                                 :clear_credit_risk
                                                 :reason_code_description])
-   :credit_model_version (get-in report [:xml_response
+   :credit-model-version (get-in report [:xml_response
                                          :inquiry :pass_through_5])
-   :cbb_score (get-in report [:xml_response :clear_bank_behavior :cbb_score])
-   :denial_reason (get-in report [:xml_response :clear_bank_behavior
+   :cbb-score (get-in report [:xml_response :clear_bank_behavior :cbb_score])
+   :denial-reason (get-in report [:xml_response :clear_bank_behavior
                                   :cbb_reason_code_description])
    :company (get-in report [:xml_response :inquiry :control_file_name])})
 

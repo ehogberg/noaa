@@ -35,17 +35,22 @@
   (try
     (info "Beginning NOAA generation")
     (doseq [{:leads_noaas/keys [id] :as noaa} (db/find-noaas-needing-generation)]
-      (info "NOAA" id "needs generation; preparing text" )
-      (let [{:keys [noaa-text]
-             {:keys [email]} :request
-             {:keys [template-type]} :meta
-             :as generated-noaa}
-            (gen/process-noaa-generation {:raw-noaa noaa})]
-        (info "NOAA text generated for" id ";saving text to db.")
-        (db/update-noaa-text! id email noaa-text template-type)
-        (info "NOAA updated")))
+      (try
+        (info "NOAA" id "needs generation; preparing text" )
+        (let [{:keys [noaa-text]
+               {:keys [email]} :request
+               {:keys [template-type]} :meta
+               :as generated-noaa}
+              (gen/process-noaa-generation {:raw-noaa noaa})]
+          (info "NOAA text generated for" id ";saving text to db.")
+          (db/update-noaa-text! id email noaa-text template-type)
+          (info "NOAA updated"))
+        (catch Exception e
+          (warn "Exception while attempting to generate NOAA" id
+                "(" (.getMessage e) ")"
+                "; generation skipped..."))))
     (catch Exception e
-      (error "Exception encountered while generating NOAAS:"
+      (error "General exception encountered while generating NOAAS:"
              (with-out-str (clojure.stacktrace/print-stack-trace e))))
     (finally
       (info "NOAA generation complete"))))
@@ -66,7 +71,10 @@
           (db/update-noaa-as-sent! id)
           (info "NOAA status updated"))
         (catch Exception e
-          (warn "Problem while sending NOAA" id ":" e))))
+          (warn "Problem while sending NOAA" id "("
+                (.getMessage e)
+                ");"
+                "will attempt to re-send as part of the next delivery pass."))))
     (catch Exception e
       (error "Exception encountered while sending NOAAS:"
              (with-out-str (clojure.stacktrace/print-stack-trace e))))

@@ -11,11 +11,11 @@ Chicago, IL 60601
 
 We also obtained your credit score from Clarity Services. and used it in making our credit decision. Your credit score is a number that reflects the information in your consumer report. Your credit score can change, depending on how the information in your consumer report changes. 
 
-Your credit score: {{clarity-report.fraud_score}}
-Date:
+Your credit score: {{clarity-report.fraud-score}}
+Date: {{clarity-report.clarity-generation-date}}
 Scores range from a low of 1 to a high of 999
 Key factors that adversely affected your credit score:
-{{clarity-report.fraud_reason_code_description|format-clarity-reasons}}
+{{clarity-report.fraud-reason-code-description|format-clarity-reasons}}
 
 The factors listed above are not the specific reasons for your denial. However, they are factors that contributed to your credit score with Clarity Services. If you have any questions regarding your credit report, your credit score or the factors that contributed to your credit score, you should contact:
 
