@@ -1,14 +1,17 @@
 {{meta.formatted-date}}
 
-{{request.first-name}} {{request.last-name}}
-{{request.street-address}}
-{{request.city}}, {{request.state}}  {{request.zip-code}}
+
 
 Dear {{request.first-name}}:
 
-We're sorry we aren't going to be able to provide you a loan.  Clarity did
-not like your profile and we'll have to pass.
+Thank you for your recent application.
 
-Have a nice day,
+After carefully reviewing your file, we regret to inform you that we cannot approve your application at this time. If you would like a statement of the specific reasons you were denied, please contact us at the mailing addres below within 60 days of this letter.  We will provide you with the statement of reasons within 30 days after receiving your request.  If you have further questions regarding this letter, please contact us at:
 
--The Management-
+Opportunity Financial, LLC
+130 E. Randolph Street, Suite 1650
+Chicago, IL 60601
+
+Thank you again for considering OppLoans.
+
+Sincerely,

@@ -1,18 +1,30 @@
 {{meta.formatted-date}}
 
-{{request.first-name}} {{request.last-name}}
-{{request.street-address}}
-{{request.city}}, {{request.state}}  {{request.zip-code}}
 
 Dear {{request.first-name}}:
 
-We're sorry we aren't going to be able to provide you a loan.  
+Thank you for your recent application. After carefully reviewing your file, we regret to inform you that we cannot approve your application at this time. If you would like a statement of the specific reasons why you were denied, please contact us at the mailing address below within 60 days of the date of this letter. We will provide you with the statement of reasons within 30 days after receiving your request. If you have any further questions regarding this letter, please contact us at:
 
-One of the components Clarity has outlined as problematic includes:
+Opportunity Financial, LLC 
+130 E Randolph Street, Suite 1650 
+Chicago, IL 60601
 
-- Low fraud score
+We also obtained your credit score from Clarity Services. and used it in making our credit decision. Your credit score is a number that reflects the information in your consumer report. Your credit score can change, depending on how the information in your consumer report changes. 
 
+Your credit score: {{clarity-report.fraud_score}}
+Date:
+Scores range from a low of 1 to a high of 999
+Key factors that adversely affected your credit score:
+{{clarity-report.fraud_reason_code_description|format-clarity-reasons}}
 
-With regrets,
+The factors listed above are not the specific reasons for your denial. However, they are factors that contributed to your credit score with Clarity Services. If you have any questions regarding your credit report, your credit score or the factors that contributed to your credit score, you should contact:
 
--The Management-
+Clarity Services, Inc. 
+P.O. Box 5717 
+Clearwater, FL 33758
+
+Toll Free Phone: (866) 390-3118 
+
+Thank you again for considering OppLoans. 
+
+Sincerely,

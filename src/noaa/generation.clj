@@ -1,14 +1,39 @@
 (ns noaa.generation
   (:require [camel-snake-kebab.core :as csk]
             [cheshire.core :refer [parse-string]]
+            [clojure.string :as string]
             [java-time :refer [local-date] :as time]
             [noaa.visine :refer [get-cached-clarity-report]]
+            [selmer.filters :refer [add-filter!]]
             [selmer.parser :as selmer]))
 
 ;; Important: don't monkey with this unless you grok Selmer and
 ;; are needing to retrieve noaa message templates from a location
 ;; other than the default ($PROJECT_ROOT/resources/templates)
 (selmer/set-resource-path! (clojure.java.io/resource "templates"))
+
+
+(defn format-clarity-reasons
+  "A very simple Selmer filter function.  Takes a string
+   representing a list of Clarity denial reason codes, each reason
+   deliminated by a | char, split along the | and add a newline
+   between each item.
+  
+   Boy, oh boy, splitting pipe characters are weird.  You'd
+   think you could do something simple like | or even escaping
+   the pipe to be regex friendly, \\|   But nope, split no like-ee.
+   To make split work correctly with a pipe, seems you need to
+   build a pattern literally from the ground up using the low
+   level java Pattern class.  Boo.  But still more convenient
+   than the other options."
+  [s]
+  (as-> s v
+    (string/split
+     v
+     (re-pattern (. java.util.regex.Pattern quote "|")))
+    (string/join "\n" v)))
+
+(add-filter! :format-clarity-reasons format-clarity-reasons)
 
 
 ;; Useful for starting a generation in the repl.
@@ -64,7 +89,7 @@
 
 
 (defn template-to-use
-  "Given a noaa, determines the correct noaa template
+  "given a noaa, determines the correct noaa template
    to be used for message generation.  Currently supports
    only lead-based noaas with or without clarity"
   [noaa]
@@ -96,21 +121,37 @@
             (template-to-use noaa)))
 
 
+(defn build-visine-data
+  "Does the detailed extraction of relevant Clarity
+   data from the (much larger) complete report."
+  [report]
+  {:fraud_score (get-in report
+                        [:xml_response :clear_credit_risk :score])
+   :fraud_reason_code_description (get-in report [:xml_response
+                                                  :clear_credit_risk
+                                                  :reason_code_description])
+   :ccr_code (get-in report [:xml_response :clear_credit_risk :score])
+   :ccr_reason_code_description (get-in report [:xml_response
+                                                :clear_credit_risk
+                                                :reason_code_description])
+   :credit_model_version (get-in report [:xml_response
+                                         :inquiry :pass_through_5])
+   :cbb_score (get-in report [:xml_response :clear_bank_behavior :cbb_score])
+   :denial_reason (get-in report [:xml_response :clear_bank_behavior
+                                  :cbb_reason_code_description])
+   :company (get-in report [:xml_response :inquiry :control_file_name])})
+
+
 (defn attach-clarity-report
   "Retrieves the Clarity report (if any) for the noaa
    and attaches it to the noaa's generation payload for
-   potential use in message generation.
-
-   At present, only mock reports are returned.  For ease
-   of debugging, most of the mock is stripped off. This will
-   need to be FIXME when the live Visine service is accessed."
+   potential use in message generation."
   [{:keys [ssn] :as noaa}]
   (let [report (get-cached-clarity-report ssn)
-        visine-body (if-not (empty? report)
-                      {:clear_fraud_score
-                       (get-in report
-                               [:xml_response :clear_fraud :clear_fraud_score])}
-                      {})]
+        visine-body
+        (if-not (empty? report)
+          (build-visine-data report)
+          {})]
     (assoc noaa :clarity-report visine-body)))
 
 
@@ -219,7 +260,7 @@
       set-template-type
       generate-noaa-text))
 
-
+ 
 (comment
   (-> std-noaa-db-data
       attach-meta
@@ -230,12 +271,3 @@
       )
   (process-noaa-generation std-noaa-db-data)
   )
-
-
-
-
-
-
-
-
-

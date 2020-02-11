@@ -30,7 +30,7 @@
 - ~~Handle processing exceptions for the identification pass gracefully.~~
 
 
-### 3:  Transmit a NOAA
+### 3:  Deliver a NOAA
 - ~~Load generated noaas from noaa table~~
 - ~~Define a transmission protocol~~
 - ~~implement file system based transmission~~
@@ -43,9 +43,15 @@
 
 
 ### 3.5: Weaponize What We Have So Far
+- Connect to Clarity for realz.
 - Align the lead db schema with reality.
 - Handle db exceptions gracefully
 - Write some basic sanity tests that involve setting up/tearing down info.
+- Get the actual text used for the templates
+- Include originating bank as a qualifier for template choice
+- Identify what we actually need from Clarity and pluck it from the report as part of attach-clarity-report in generation.
+
+
 
 
 ### 4: Build a NOAA test environment
@@ -70,7 +76,4 @@
 
 ### BACKLOG
 - Move Migratus operations into a setting that honors environment configs.
-- Identify what we actually need from Clarity and pluck it from the report as part of attach-clarity-report in generation.
-- Get the actual text used for the templates
-- Include originating bank as a qualifier for template choice
 - Store delivery status as part of NOAA during delivery pass
