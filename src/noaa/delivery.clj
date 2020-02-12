@@ -36,6 +36,15 @@
       (assoc noaa :delivery-status "Delivered to /dev/null"))))
 
 
+(defn echo-delivery-service
+  "Convenience delivery service which just echoes the
+   NOAA message to stdout."
+  []
+  (reify Delivery
+    (_deliver-noaa [_ {:noaas/keys [noaa_text] :as noaa}]
+      (assoc noaa :delivery-status noaa_text))))
+
+
 (defn make-delivery-service
   "Determines the delivery service implementation to use by
    inspecting the NOAA_DELIVERY_SERVICE environment var."
@@ -43,6 +52,7 @@
   (case (env :noaa-delivery-service)
     "smtp" (smtp-delivery-service)
     "filesystem" (filesystem-delivery-service)
+    "echo" (echo-delivery-service)
     (bitbucket-delivery-service)))
 
 

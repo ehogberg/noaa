@@ -10,8 +10,8 @@
 
 (def ds-options {:pool-name     "lz-pool"
                  :adapter       "postgresql"
-                 :server-name   (env :leads-database-hostname)
-                 :database-name (env :leads-database-name)})
+                 :server-name   (env :noaas-database-hostname)
+                 :database-name (env :noaas-database-name)})
 
 
 (defonce ds (delay (make-datasource ds-options)))
@@ -36,8 +36,8 @@
         id (UUID/randomUUID)]
     (jdbc/execute! @ds
                    ["insert into leads
-                    (id,request,status)
-                    values (?, ?::json,623)"
+                    (id,request,status,version)
+                    values (?, ?::json,623,'5')"
                     id
                     (:request lead)])))
 
@@ -62,14 +62,19 @@
    the noaa_generated_at attribute, which means that
    the noaa will be included in the next send-noaas 
    processing run."
-  [noaa-id send-to noaa-text template-type]
-  (sql/update! @ds :noaas
-               {:noaa_text noaa-text
-                :noaa_template_type template-type
-                :noaa_destination_email send-to
-                :noaa_generated_at (offset-date-time)
-                :updated_at (offset-date-time)}
-               {:id noaa-id}))
+  [noaa-id send-to noaa-text template-type noaa-data]
+  (jdbc/execute! @ds
+                 ["update noaas
+                   set noaa_text = ?, noaa_template_type = ?,
+                       noaa_destination_email = ?,
+                       noaa_generated_at = ?,
+                       updated_at = ?,
+                       noaa_generation_data = ?::json
+                   where id = ?"
+                  noaa-text template-type
+                  send-to (offset-date-time)
+                  (offset-date-time) noaa-data
+                  noaa-id]))
 
 
 (defn update-noaa-as-sent!
@@ -89,18 +94,14 @@
    - status = 623 (Clarity rejected)
    - No NOAA has been previously generated for the lead.
 
-   We utilize SQL join semantics to check the second condition: by
-   left joining leads back to the noaas table, any lead which hasn't
-   previously generated a NOAA will present an empty noaa row in the
-   resulting dataset.  By checking a record's noaa_identified_at column for
-   nil, we can determine that a NOAA was never generated for the 
-   corresponding lead and that we should generate one.
+  We query the leads_noaas view created in the reporting db which
+  joins leads and noaas across different schemas, rather than
+  trying to manually join them ourselves which will likely run
+  afoul of access security issues.
 
-   Note that a much easier way to do this would be to add some
-   sentinal attribute in the actual lead table and check it.  For the
-   moment we are trying to avoid mucking around in the LZ core schema
-   so we take this approach.  Definitely a IMPROVEME opportunity for
-   the future."
+  TODO: Add a date window parameter to the where clause so we're
+  not joining hundreds of thousands of older records needlessly.
+  "
   []
   (sql/query @ds ["select lead_id
                    from leads_noaas

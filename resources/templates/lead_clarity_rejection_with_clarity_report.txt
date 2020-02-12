@@ -9,7 +9,7 @@ Opportunity Financial, LLC
 130 E Randolph Street, Suite 1650 
 Chicago, IL 60601
 
-We also obtained your credit score from Clarity Services. and used it in making our credit decision. Your credit score is a number that reflects the information in your consumer report. Your credit score can change, depending on how the information in your consumer report changes. 
+We also obtained your credit score from Clarity Services and used it in making our credit decision. Your credit score is a number that reflects the information in your consumer report. Your credit score can change, depending on how the information in your consumer report changes. 
 
 Your credit score: {{clarity-report.fraud-score}}
 Date: {{clarity-report.clarity-generation-date}}

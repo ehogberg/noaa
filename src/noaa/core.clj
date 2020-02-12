@@ -1,9 +1,18 @@
 (ns noaa.core
-  (:require [noaa.generation :as gen]
+  (:require [cheshire.core :refer [generate-string]]
+            [cheshire.generate :refer [add-encoder]]
+            [noaa.generation :as gen]
             [noaa.persistence.db :as db]
             [noaa.delivery :as delivery]
             [taoensso.timbre :refer [info debug error warn]])
   (:gen-class))
+
+
+;; Cheshire chokes on the newer date types;
+;; provide an encoder to ease its pain 
+(add-encoder java.time.LocalDate
+             (fn [c json-writer]
+               (.writeString json-writer (.toString c))))
 
 
 (defn identify-noaas
@@ -34,7 +43,8 @@
   []
   (try
     (info "Beginning NOAA generation")
-    (doseq [{:noaas/keys [id] :as noaa} (db/find-noaas-needing-generation)]
+    (doseq [{:noaas/keys [id] :as noaa}
+            (db/find-noaas-needing-generation)]
       (try
         (info "NOAA" id "needs generation; preparing text" )
         (let [{:keys [noaa-text]
@@ -43,10 +53,14 @@
                :as generated-noaa}
               (gen/process-noaa-generation {:raw-noaa noaa})]
           (info "NOAA text generated for" id ";saving text to db.")
-          (db/update-noaa-text! id email noaa-text template-type)
+          (db/update-noaa-text! id email noaa-text
+                                template-type
+                                (generate-string
+                                 (dissoc generated-noaa :noaa-text)))
           (info "NOAA updated"))
         (catch Exception e
-          (warn "Exception while attempting to generate NOAA" id
+          (warn e
+                "Exception while attempting to generate NOAA" id
                 "(" (.getMessage e) ")"
                 "; generation skipped..."))))
     (catch Exception e
@@ -82,16 +96,34 @@
       (info "NOAA delivery complete"))))
 
 
+;; Demo functions.
+
+(defn gen-some-leads
+  "Generate some fake lead data for testing/demo purposes"
+  []
+  (info "Generating 10 fake leads...")
+  (dotimes [n 10] (db/create-fake-lead))
+  (info "Generation complete."))
+
+
+(defn demo-noaas
+  "Generate some data then run the entire processing
+   cycle."
+  []
+  (gen-some-leads)
+  (identify-noaas)
+  (generate-noaas)
+  (send-noaas))
+
+
 (defn -main
   [action & rest]  
   (case action
     "identify-noaas" (identify-noaas)
     "generate-noaas" (generate-noaas)
     "send-noaas" (send-noaas)
-    "gen-some-leads" (do
-                       (info "Generating 10 fake leads...")
-                       (dotimes [n 10] (db/create-fake-lead))
-                       (info "Generation complete."))
+    "gen-some-leads" (gen-some-leads)
+    "demo-noaas" (demo-noaas)
     (error "Unknown action:" action)))
   
 

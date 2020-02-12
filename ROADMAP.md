@@ -53,8 +53,8 @@
 
 
 
-
 ### 4: Build a NOAA test environment
+- Store data used to generate message in noaa table.
 - Create a test node
 - Create secrets for test environment
 - Connect to test database
@@ -65,15 +65,18 @@
 - define and write integration tests
 
 
+
 ### 5:  Build a NOAA production environment.
 - create a production node
 - Create secrets for production node
 - connect to production db
 - Create noaa table in production 
-- define a tee
-- review tee
+- define a production test
+- review production test
+
 
 
 ### BACKLOG
+- Add a rolling window to the identify-leads-needing-noaas query so we don't do needless retrievals.
 - Move Migratus operations into a setting that honors environment configs.
 - Store delivery status as part of NOAA during delivery pass
