@@ -27,16 +27,6 @@
              :migration-dir "migrations"
              :db {:classname "com.postgresql.jdbc.Driver"
                   :subprotocol "postgresql"
-                  :subname "//localhost/lead_zeppelin_dev"}}
+                  :subname "//localhost/noaa_dev"}}
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
-
-
-
-
-
-
-
-
-
-

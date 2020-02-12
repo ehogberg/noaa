@@ -8,7 +8,7 @@
    (the user specified in the NOAA is ignored.)
    Useful for testing that mail does what you expect
    without accidentally spamming people."
-  [{:leads_noaas/keys [noaa_text] :as noaa}]
+  [{:noaas/keys [noaa_text] :as noaa}]
   (assoc noaa :delivery-status
          (postal/send-message
           {:host (env :smtp-delivery-host)

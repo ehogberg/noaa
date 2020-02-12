@@ -23,7 +23,7 @@
 
 
 (defn find-noaa [id]
-  (sql/get-by-id @ds :leads_noaas id))
+  (sql/get-by-id @ds :noaas id))
 
 
 (defn create-fake-lead
@@ -48,7 +48,7 @@
    picked up by the next generate-lead process and
    have its notice message generated."
   [lead-id]
-  (sql/insert! @ds :leads_noaas
+  (sql/insert! @ds :noaas
                {:id (UUID/randomUUID)
                 :lead_id lead-id
                 :noaa_identified_at (offset-date-time)}))
@@ -63,7 +63,7 @@
    the noaa will be included in the next send-noaas 
    processing run."
   [noaa-id send-to noaa-text template-type]
-  (sql/update! @ds :leads_noaas
+  (sql/update! @ds :noaas
                {:noaa_text noaa-text
                 :noaa_template_type template-type
                 :noaa_destination_email send-to
@@ -78,7 +78,7 @@
    delivery of the noaa message.  After this update,
    the noaa processing is considered complete."
   [noaa-id]
-  (sql/update! @ds :leads_noaas
+  (sql/update! @ds :noaas
                {:noaa_transmitted_at (offset-date-time)
                 :updated_at (offset-date-time)}
                {:id noaa-id}))
@@ -102,15 +102,15 @@
    so we take this approach.  Definitely a IMPROVEME opportunity for
    the future."
   []
-  (sql/query @ds ["select l.id as lead_id 
-                   from leads l left join leads_noaas n
-                   on l.id = n.lead_id
-                   where n.noaa_identified_at is null
-                     and l.status = 623
-                     and l.created_date >= ?"
+  (sql/query @ds ["select lead_id
+                   from leads_noaas
+                   where noaa_identified_at is null
+                     and lead_status = 623
+                     and lead_created_date >= ?"
                   (local-date
                    "yyyy-MM-dd"
                    (env :leads-noaa-cutoff-date))]))
+
 
 
 (defn find-noaas-needing-generation
@@ -119,7 +119,7 @@
   []
   (sql/query @ds ["select n.*,
                           l.*
-                  from leads_noaas n
+                  from  noaas n
                   inner join leads l on l.id = n.lead_id
                   where n.noaa_generated_at is null"]))
 
@@ -128,9 +128,10 @@
   "Retrieves any noaa which has completed generation processing but
    has not yet been delivered to its intended recipient."
   []
-  (sql/query @ds ["select * from leads_noaas
+  (sql/query @ds ["select * from noaas
                    where noaa_transmitted_at is null
                      and noaa_generated_at is not null"]))
+
 
 (comment
   (find-leads-needing-noaas)

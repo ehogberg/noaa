@@ -7,6 +7,7 @@
             [selmer.filters :refer [add-filter!]]
             [selmer.parser :as selmer]))
 
+
 ;; Important: don't monkey with this unless you grok Selmer and
 ;; are needing to retrieve noaa message templates from a location
 ;; other than the default ($PROJECT_ROOT/resources/templates)
@@ -40,29 +41,29 @@
 (def std-noaa-db-data
   {:raw-noaa
    {:leads/version nil,
-    :leads_noaas/noaa_destination_email nil,
+    :noaas/noaa_destination_email nil,
     :leads/prepop_data nil,
     :leads/created_date #inst "2020-02-09T16:34:04.817329000-00:00",
     :leads/updated_date #inst "2020-02-09T16:34:04.817329000-00:00",
-    :leads_noaas/lead_id #uuid "f35eb07e-e95a-4973-977d-495b05d27fa9",
+    :noaas/lead_id #uuid "f35eb07e-e95a-4973-977d-495b05d27fa9",
     :leads/ssn nil,
-    :leads_noaas/created_at
+    :noaas/created_at
     #inst "2020-02-09T16:34:20.539184000-00:00",
     :leads/response nil,
-    :leads_noaas/id #uuid "f8b4f241-6fac-4e86-8066-2889dd4c3999",
+    :noaas/id #uuid "f8b4f241-6fac-4e86-8066-2889dd4c3999",
     :leads/all_ctx nil,
-    :leads_noaas/noaa_identified_at
+    :noaas/noaa_identified_at
     #inst "2020-02-09T16:34:20.538000000-00:00",
-    :leads_noaas/noaa_generated_at nil,
-    :leads_noaas/updated_at
+    :noaas/noaa_generated_at nil,
+    :noaas/updated_at
     #inst "2020-02-09T16:34:20.539184000-00:00",
-    :leads_noaas/noaa_transmitted_at nil,
+    :noaas/noaa_transmitted_at nil,
     :leads/response_code nil,
     :leads/request
     "{\"email\":\"Aurelia86@example.com\",\"socialSecurityNumber\":\"123456789\",\"personalInfo\":{\"firstName\":\"Lisa\",\"lastName\":\"Marvin\",\"address\":{\"streetAddress\":\"54872 Collier Summit\",\"city\":\"Kertzmannmouth\",\"zip\":\"81861\",\"countryCode\":\"US\"}},\"stateCode\":\"Arizona\"}",
     :leads/status 623,
     :leads/id #uuid "f35eb07e-e95a-4973-977d-495b05d27fa9",
-    :leads_noaas/noaa_text nil}})
+    :noaas/noaa_text nil}})
 
 
 ;; A completely-filled-in generated NOAA structure, based on the above.

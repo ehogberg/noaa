@@ -1,4 +1,4 @@
-create table if not exists leads_noaas(
+create table if not exists noaas(
   id uuid not null primary key,
   lead_id uuid not null,
   noaa_identified_at timestamp not null,
@@ -10,7 +10,7 @@ create table if not exists leads_noaas(
   updated_at timestamp default now()
   );
 --;;
-create index if not exists idx_leads_noaas_lead_id on leads_noaas(lead_id);
+create index if not exists idx_noaas_lead_id on noaas(lead_id);
 
 
 

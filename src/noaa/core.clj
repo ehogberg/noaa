@@ -15,9 +15,9 @@
   []
   (try
     (info "Beginning NOAA identification")
-    (doseq [{:leads/keys [lead_id]} (db/find-leads-needing-noaas)]
+    (doseq [{:leads_noaas/keys [lead_id]} (db/find-leads-needing-noaas)]
       (info "NOAA required for lead:" lead_id)
-      (let [{:leads_noaas/keys [id]} (db/create-noaa-record! lead_id)]
+      (let [{:noaas/keys [id]} (db/create-noaa-record! lead_id)]
         (info "Created NOAA ID" id "for lead" lead_id)))
     (catch Exception e
       (error "Exception encountered while identifying NOAAS:"
@@ -34,7 +34,7 @@
   []
   (try
     (info "Beginning NOAA generation")
-    (doseq [{:leads_noaas/keys [id] :as noaa} (db/find-noaas-needing-generation)]
+    (doseq [{:noaas/keys [id] :as noaa} (db/find-noaas-needing-generation)]
       (try
         (info "NOAA" id "needs generation; preparing text" )
         (let [{:keys [noaa-text]
@@ -63,7 +63,7 @@
   []
   (try
     (info "Beginning NOAA delivery")
-    (doseq [{:leads_noaas/keys [id] :as noaa} (db/find-noaas-needing-sending)]
+    (doseq [{:noaas/keys [id] :as noaa} (db/find-noaas-needing-sending)]
       (info "NOAA" id "needs to be sent." )
       (try
         (let [{:keys [delivery-status]} (delivery/deliver-noaa noaa)]
