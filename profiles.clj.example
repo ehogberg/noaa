@@ -1,0 +1,23 @@
+{:dev {:env {:noaas-database-name "noaa_dev"
+             :noaas-database-hostname "localhost"
+             :noaas-migration-db "jdbc:postgresql://localhost/noaa_dev"
+             :leads-noaa-cutoff-date "2019-12-31"
+             :noaa-delivery-service "echo"
+             :smtp-delivery-host "<your.mailserver.here>"
+             :smtp-delivery-user "<your.mailserver.loginid.here>"
+             :smtp-delivery-password "<your.mailserver.password.here>"
+             :smtp-delivery-port "<AppropriateSMTPPortForYourMailserverHere"
+             :smtp-delivery-tls "<TrueIfYoureUsingTLSForMailTransmission(WhichYouShouldBe)>"
+             :smtp-delivery-sender "noaa@opploans.com"
+             :smtp-delivery-sandbox-recipient "<email.address@to.send.mails.to>"
+             :filesystem-delivery-path "./tmp"}}}
+
+
+
+
+
+
+
+
+
+
