@@ -125,24 +125,23 @@
 (defn build-visine-data
   "Does the detailed extraction of relevant Clarity
    data from the (much larger) complete report."
-  [report]
-  {:clarity-generation-date (get-in report [:xml_response :inquiry
-                                            :product_date])
-   :fraud-score (get-in report
-                        [:xml_response :clear_credit_risk :score])
-   :fraud-reason-code-description (get-in report [:xml_response
-                                                  :clear_credit_risk
-                                                  :reason_code_description])
-   :ccr-code (get-in report [:xml_response :clear_credit_risk :score])
-   :ccr-reason-code-description (get-in report [:xml_response
-                                                :clear_credit_risk
-                                                :reason_code_description])
-   :credit-model-version (get-in report [:xml_response
-                                         :inquiry :pass_through_5])
-   :cbb-score (get-in report [:xml_response :clear_bank_behavior :cbb_score])
-   :denial-reason (get-in report [:xml_response :clear_bank_behavior
-                                  :cbb_reason_code_description])
-   :company (get-in report [:xml_response :inquiry :control_file_name])})
+  [{{{report-generation-date :product_date
+      credit-model-version :pass_through_5
+      company :control_file_name} :inquiry
+     {ccr-score :score
+      ccr-reason-code-description :reason_code_description} :clear_credit_risk
+     {cbb-score :cbb_score
+      denial-reason :cbb_reason_code_description} :clear_bank_behavior}
+    :xml_response}]
+  {:clarity-generation-date report-generation-date
+   :fraud-score ccr-score
+   :fraud-reason-code-description ccr-reason-code-description
+   :ccr-code ccr-score
+   :ccr-reason-code-description ccr-reason-code-description
+   :credit-model-version credit-model-version
+   :cbb-score cbb-score
+   :denial-reason denial-reason
+   :company company})
 
 
 (defn attach-clarity-report
@@ -274,3 +273,10 @@
       )
   (process-noaa-generation std-noaa-db-data)
   )
+
+
+
+
+
+
+
