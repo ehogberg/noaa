@@ -33,14 +33,14 @@
     :noaas/noaa_text nil}})
 
 
-(def meta 
+(def meta-data
   {:current-date #inst "2020-02-09",
    :noaa-id #uuid "f8b4f241-6fac-4e86-8066-2889dd4c3999",
    :lead-id #uuid "f35eb07e-e95a-4973-977d-495b05d27fa9",
    :formatted-date "Feb 9, 2020"})
 
 
-(def lead-meta (assoc meta :application-type :lead))
+(def lead-meta (assoc meta-data :application-type :lead))
 
 
 (def clarity-report
@@ -69,7 +69,7 @@
    :zip-code "81861"})
 
 
-(def lead-noaa {:meta (assoc meta :application-type :lead)})
+(def lead-noaa {:meta (assoc meta-data :application-type :lead)})
 
 
 (def lead-noaa-with-clarity-report (assoc lead-noaa
