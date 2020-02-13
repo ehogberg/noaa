@@ -73,7 +73,7 @@
     :application-type :lead,
     :noaa-id #uuid "f8b4f241-6fac-4e86-8066-2889dd4c3999",
     :lead-id #uuid "f35eb07e-e95a-4973-977d-495b05d27fa9",
-    :template-type  "lead_clarity_rejection_no_clarity_report.txt"
+    :template-type  "lead_clarity_rejection_with_clarity_report.txt"
     :formatted-date "Feb 9, 2020"},
    :request
    {:email "Aurelia86@example.com",
@@ -98,7 +98,7 @@
     :lead (if (empty? (:clarity-report noaa))
             "lead_clarity_rejection_no_clarity_report.txt"
             "lead_clarity_rejection_with_clarity_report.txt")
-    :else nil))
+    nil))
 
 
 (defn attach-meta

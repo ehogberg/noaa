@@ -43,6 +43,7 @@
 
 
 ### 3.5: Weaponize What We Have So Far
+- ~~Store data used to generate message in noaa table.~~
 - Connect to Clarity for realz.
 - Align the lead db schema with reality.
 - Handle db exceptions gracefully
@@ -54,7 +55,6 @@
 
 
 ### 4: Build a NOAA test environment
-- Store data used to generate message in noaa table.
 - Create a test node
 - Create secrets for test environment
 - Connect to test database
