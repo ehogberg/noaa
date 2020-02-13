@@ -13,7 +13,7 @@
     :leads/created_date #inst "2020-02-09T16:34:04.817329000-00:00",
     :leads/updated_date #inst "2020-02-09T16:34:04.817329000-00:00",
     :noaas/lead_id #uuid "f35eb07e-e95a-4973-977d-495b05d27fa9",
-    :leads/ssn nil,
+    :leads/ssn "123456789",
     :noaas/created_at
     #inst "2020-02-09T16:34:20.539184000-00:00",
     :leads/response nil,

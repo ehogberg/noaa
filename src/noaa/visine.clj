@@ -18,15 +18,16 @@
 
 
 (defn mock-visine-service
-  "In-process simulator of the Visine service.  Flips a coin
-   metaphorically speaking and, depending on the result,
-   returns either a static Visine report (see mock visine data
-   above) or an empty map (pretending to be a case where no
-   Clarity pull occurred."
+  "In-process simulator of the Visine service.  Checks
+   the ending digit of the supplied SSN and either returns
+   a static Visine report (see mock visine data
+   above) when the end digit is even or an empty map
+  (pretending to be a case where no Clarity pull occurred)
+   when the ending digit is odd."
   []
   (reify Visine
-    (_get-cached-clarity-report [_ _]
-      (if (= (rand-int 2) 0)
+    (_get-cached-clarity-report [_ ssn]
+      (if (re-find #"[02468]$" ssn)
         @mock-visine-data
         {}))))
 

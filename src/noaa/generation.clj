@@ -46,7 +46,7 @@
     :leads/created_date #inst "2020-02-09T16:34:04.817329000-00:00",
     :leads/updated_date #inst "2020-02-09T16:34:04.817329000-00:00",
     :noaas/lead_id #uuid "f35eb07e-e95a-4973-977d-495b05d27fa9",
-    :leads/ssn nil,
+    :leads/ssn "123456780",
     :noaas/created_at
     #inst "2020-02-09T16:34:20.539184000-00:00",
     :leads/response nil,
@@ -60,7 +60,7 @@
     :noaas/noaa_transmitted_at nil,
     :leads/response_code nil,
     :leads/request
-    "{\"email\":\"Aurelia86@example.com\",\"socialSecurityNumber\":\"123456789\",\"personalInfo\":{\"firstName\":\"Lisa\",\"lastName\":\"Marvin\",\"address\":{\"streetAddress\":\"54872 Collier Summit\",\"city\":\"Kertzmannmouth\",\"zip\":\"81861\",\"countryCode\":\"US\"}},\"stateCode\":\"Arizona\"}",
+    "{\"email\":\"Aurelia86@example.com\",\"socialSecurityNumber\":\"123456780\",\"personalInfo\":{\"firstName\":\"Lisa\",\"lastName\":\"Marvin\",\"address\":{\"streetAddress\":\"54872 Collier Summit\",\"city\":\"Kertzmannmouth\",\"zip\":\"81861\",\"countryCode\":\"US\"}},\"stateCode\":\"Arizona\"}",
     :leads/status 623,
     :leads/id #uuid "f35eb07e-e95a-4973-977d-495b05d27fa9",
     :noaas/noaa_text nil}})
@@ -149,7 +149,7 @@
   "Retrieves the Clarity report (if any) for the noaa
    and attaches it to the noaa's generation payload for
    potential use in message generation."
-  [{:keys [ssn] :as noaa}]
+  [{{:keys [ssn]} :request :as noaa}]
   (let [report (get-cached-clarity-report ssn)
         visine-body
         (if-not (empty? report)
