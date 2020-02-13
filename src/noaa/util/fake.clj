@@ -12,6 +12,19 @@
     (apply merge-with deep-merge maps)))
 
 
+(defn fake-ssn
+  "Generates a sequence of digits that superficially resembles
+   a social security number.
+
+   Note that the real thing's digits are positionally meaningful,
+   which this implementation makes zero attempt to support."
+  []
+  (format "%s%s%s"
+          (+ (rand-int 899) 100)
+          (+ (rand-int 89) 10)
+          (+ (rand-int 8999) 1000)))
+
+
 (defn fake-lead-api-request
   ([] (fake-lead-api-request {}))
   ([customized-data]
@@ -29,14 +42,14 @@
 
 
 (defn fake-lead []
-  (let [fake-ssn "123456789"]
+  (let [ssn (fake-ssn)]
     {:status 200
      :version "5"
-     :request (-> {:socialSecurityNumber fake-ssn}
+     :request (-> {:socialSecurityNumber ssn}
                   fake-lead-api-request
                   generate-string) 
      :response_code 200
-     :ssn fake-ssn}))
+     :ssn ssn}))
 
 
 (comment

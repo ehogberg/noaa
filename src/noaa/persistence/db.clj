@@ -17,6 +17,7 @@
 (defonce ds (delay (make-datasource ds-options)))
 
 
+
 ;; Convenience finders for leads and noaas.
 (defn find-lead [id]
   (sql/get-by-id @ds :leads id))
@@ -32,14 +33,13 @@
    this function if your database connection
    is to any sort of live db."
   []
-  (let [lead (fake-lead)
+  (let [{:keys [request ssn]} (fake-lead)
         id (UUID/randomUUID)]
     (jdbc/execute! @ds
                    ["insert into leads
-                    (id,request,status,version)
-                    values (?, ?::json,623,'5')"
-                    id
-                    (:request lead)])))
+                    (id,request,status,version,ssn)
+                    values (?, ?::json,623,'5',?)"
+                    id request ssn])))
 
 
 (defn create-noaa-record!
