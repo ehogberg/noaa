@@ -3,6 +3,13 @@
             [postal.core :as postal]))
 
 
+(defn -service-details []
+  (format "SMTPDelivery: server %s, user: %s, sender: %s"
+          (env :smtp-delivery-host)
+          (env :smtp-delivery-user)
+          (env :smtp-delivery-sender)))
+
+
 (defn -deliver-noaa
   "Transmits a NOAA via email to a sandbox user
    (the user specified in the NOAA is ignored.)

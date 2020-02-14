@@ -5,6 +5,7 @@
             [noaa.persistence :as p]
             [noaa.persistence.db :as db]
             [noaa.delivery :as delivery]
+            [noaa.visine :as visine]
             [taoensso.timbre :refer [info debug error warn]])
   (:gen-class))
 
@@ -16,6 +17,13 @@
                (.writeString json-writer (.toString c))))
 
 
+(defn print-service-details []
+  (format "Service Details NOAAData:(%s) Visine:(%s) Delivery:(%s)"
+          (p/service-details)
+          (visine/service-details)
+          (delivery/service-details)))
+
+
 (defn identify-noaas
   "Scans the specified leads database looking for leads
    which have been Clarity failed but have not previously
@@ -25,6 +33,7 @@
   []
   (try
     (info "Beginning NOAA identification")
+    (info (print-service-details))
     (doseq [{:leads_noaas/keys [lead_id]} (p/find-leads-needing-noaas)]
       (info "NOAA required for lead:" lead_id)
       (let [{:noaas/keys [id]} (p/create-noaa-record! lead_id)]
@@ -44,6 +53,7 @@
   []
   (try
     (info "Beginning NOAA generation")
+    (info (print-service-details))
     (doseq [{:noaas/keys [id] :as noaa}
             (p/find-noaas-needing-generation)]
       (try
@@ -78,6 +88,7 @@
   []
   (try
     (info "Beginning NOAA delivery")
+    (info (print-service-details))
     (doseq [{:noaas/keys [id] :as noaa} (p/find-noaas-needing-sending)]
       (info "NOAA" id "needs to be sent." )
       (try

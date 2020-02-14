@@ -42,6 +42,14 @@
                     id request ssn])))
 
 
+;; NOAAData protocol implementation...
+
+(defn -service-details []
+  (format "DB-NOAAData: //%s/%s"
+          (env :noaas-database-hostname)
+          (env :noaas-database-name)))
+
+
 (defn -create-noaa-record!
   "Given a lead id, creates a new uninitialized
    NOAA in the attached db.  This NOAA will be

@@ -15,6 +15,11 @@
           (.toString (offset-date-time))))
 
 
+(defn -service-details []
+  (format "FilesystemDelivery: default path %s"
+          (noaa-file-path-prefix)))
+
+
 (defn -deliver-noaa [{:noaas/keys [noaa_text] :as noaa}]
   (spit (noaa-file-path noaa) noaa_text))
 

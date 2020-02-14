@@ -7,6 +7,7 @@
 ;; using various differing approaches.
 
 (defprotocol Visine
+  (-service-details [this])
   (-get-cached-clarity-report [this ssn]))
 
 
@@ -26,6 +27,8 @@
    when the ending digit is odd."
   []
   (reify Visine
+    (-service-details [_]
+      "MockVisineService")
     (-get-cached-clarity-report [_ ssn]
       (if (re-find #"[02468]$" ssn)
         @mock-visine-data
@@ -43,6 +46,10 @@
 
 ;; Public interface for retrieving Clarity reports as
 ;; part of noaa generation.
+
+(defn service-details []
+  (-service-details (make-visine)))
+
 
 (defn get-cached-clarity-report
   "Given a social security number, retrieves the Clarity

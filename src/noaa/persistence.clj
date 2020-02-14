@@ -4,6 +4,7 @@
 
 (defprotocol NOAAData
   "A protocol to manage finders/updaters of NOAA data."
+  (-service-details [this])
   (-create-noaa-record! [this lead-id])
   (-update-noaa-text! [this noaa-id send-to
                       noaa-text template-type
@@ -19,6 +20,8 @@
   "Reifies NOAAData using a relational db as a datastore."
   []
   (reify NOAAData
+    (-service-details [_]
+      (db/-service-details))
     (-create-noaa-record! [_ lead-id]
       (db/-create-noaa-record! lead-id))
     (-update-noaa-text! [_ noaa-id send-to
@@ -45,6 +48,10 @@
 
 
 ;; Public interface for interacting with NOAA data
+
+(defn service-details []
+  (-service-details (make-noaa-data-service)))
+
 
 (defn create-noaa-record!
   "Given a lead ID, creates a NOAA record"

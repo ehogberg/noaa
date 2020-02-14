@@ -7,6 +7,7 @@
 (defprotocol Delivery
   "Defines a protocol for transporting NOAA content
    to its intended recipient."
+  (-service-details [this])
   (-deliver-noaa [this noaa]))
 
 
@@ -16,6 +17,8 @@
    inspect content generated for noaa messaging"
   []
   (reify Delivery
+    (-service-details [_]
+      (f/-service-details))
     (-deliver-noaa [_ noaa]
       (f/-deliver-noaa noaa))))
 
@@ -24,6 +27,8 @@
   "Transmits a noaa message to a recipient via smtp."
   []
   (reify Delivery
+    (-service-details [_]
+      (smtp/-service-details))
     (-deliver-noaa [_ noaa]
       (smtp/-deliver-noaa noaa))))
 
@@ -33,6 +38,7 @@
    nothing but doesn't interrupt noaa delivery processing"
   []
   (reify Delivery
+    (-service-details [_] "BitbucketDelivery")
     (-deliver-noaa [_ noaa]
       (assoc noaa :delivery-status "Delivered to /dev/null"))))
 
@@ -42,6 +48,7 @@
    NOAA message to stdout."
   []
   (reify Delivery
+    (-service-details [_] "EchoDelivery")
     (-deliver-noaa [_ {:noaas/keys [noaa_text] :as noaa}]
       (assoc noaa :delivery-status noaa_text))))
 
@@ -58,6 +65,10 @@
 
 
 ;; Delivery functions for public (out of ns) usage.
+
+(defn service-details []
+  (-service-details (make-delivery-service)))
+
 
 (defn deliver-noaa
   "Given a noaa, attempts to deliver its contents to its
