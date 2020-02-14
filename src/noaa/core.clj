@@ -3,7 +3,6 @@
             [cheshire.generate :refer [add-encoder]]
             [noaa.generation :as gen]
             [noaa.persistence :as p]
-            [noaa.persistence.db :as db]
             [noaa.delivery :as delivery]
             [noaa.visine :as visine]
             [taoensso.timbre :refer [info debug error warn]])
@@ -114,7 +113,7 @@
   "Generate some fake lead data for testing/demo purposes"
   []
   (info "Generating 10 fake leads...")
-  (dotimes [n 10] (db/create-fake-lead))
+  (dotimes [n 10] (noaa.persistence.db/create-fake-lead))
   (info "Generation complete."))
 
 
