@@ -3,10 +3,11 @@
             [noaa.delivery.filesystem :as f]
             [noaa.delivery.smtp :as smtp]))
 
-;; Defines a protocol for transporting noaa content
-;; to its intended recipient.
+
 (defprotocol Delivery
-  (_deliver-noaa [this noaa]))
+  "Defines a protocol for transporting NOAA content
+   to its intended recipient."
+  (-deliver-noaa [this noaa]))
 
 
 (defn filesystem-delivery-service
@@ -15,16 +16,16 @@
    inspect content generated for noaa messaging"
   []
   (reify Delivery
-    (_deliver-noaa [_ noaa]
-      (f/_deliver-noaa noaa))))
+    (-deliver-noaa [_ noaa]
+      (f/-deliver-noaa noaa))))
 
 
 (defn smtp-delivery-service
   "Transmits a noaa message to a recipient via smtp."
   []
   (reify Delivery
-    (_deliver-noaa [_ noaa]
-      (smtp/_deliver-noaa noaa))))
+    (-deliver-noaa [_ noaa]
+      (smtp/-deliver-noaa noaa))))
 
 
 (defn bitbucket-delivery-service
@@ -32,7 +33,7 @@
    nothing but doesn't interrupt noaa delivery processing"
   []
   (reify Delivery
-    (_deliver-noaa [_ noaa]
+    (-deliver-noaa [_ noaa]
       (assoc noaa :delivery-status "Delivered to /dev/null"))))
 
 
@@ -41,7 +42,7 @@
    NOAA message to stdout."
   []
   (reify Delivery
-    (_deliver-noaa [_ {:noaas/keys [noaa_text] :as noaa}]
+    (-deliver-noaa [_ {:noaas/keys [noaa_text] :as noaa}]
       (assoc noaa :delivery-status noaa_text))))
 
 
@@ -63,7 +64,7 @@
    intended recipient using whatever means are provided by
    the delivery system configured as the default one."
   [noaa]
-  (_deliver-noaa (make-delivery-service) noaa))
+  (-deliver-noaa (make-delivery-service) noaa))
 
 
 

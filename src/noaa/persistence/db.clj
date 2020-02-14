@@ -19,11 +19,11 @@
 
 
 ;; Convenience finders for leads and noaas.
-(defn find-lead [id]
+(defn- find-lead [id]
   (sql/get-by-id @ds :leads id))
 
 
-(defn find-noaa [id]
+(defn- find-noaa [id]
   (sql/get-by-id @ds :noaas id))
 
 
@@ -42,7 +42,7 @@
                     id request ssn])))
 
 
-(defn create-noaa-record!
+(defn -create-noaa-record!
   "Given a lead id, creates a new uninitialized
    NOAA in the attached db.  This NOAA will be
    picked up by the next generate-lead process and
@@ -54,7 +54,7 @@
                 :noaa_identified_at (offset-date-time)}))
 
 
-(defn update-noaa-text!
+(defn -update-noaa-text!
   "Called as part of the generate-noaas processing,
    given a noaa ID, updates the NOAA to include
    message text, the sending destination and template
@@ -77,7 +77,7 @@
                   noaa-id]))
 
 
-(defn update-noaa-as-sent!
+(defn -update-noaa-as-sent!
   "Called as part of send-noaas processing, updates
    the noaa with some audit information relating to
    delivery of the noaa message.  After this update,
@@ -89,7 +89,7 @@
                {:id noaa-id}))
 
 
-(defn find-leads-needing-noaas
+(defn -find-leads-needing-noaas
   "A lead requires a NOAA if the following conditions have been met:
    - status = 623 (Clarity rejected)
    - No NOAA has been previously generated for the lead.
@@ -114,7 +114,7 @@
 
 
 
-(defn find-noaas-needing-generation
+(defn -find-noaas-needing-generation
   "Retrieves any NOAA with a null noaa_generated_at date (has not
    had its message generated successfully as of yet.)"
   []
@@ -125,7 +125,7 @@
                   where n.noaa_generated_at is null"]))
 
 
-(defn find-noaas-needing-sending
+(defn -find-noaas-needing-sending
   "Retrieves any noaa which has completed generation processing but
    has not yet been delivered to its intended recipient."
   []
@@ -135,9 +135,9 @@
 
 
 (comment
-  (find-leads-needing-noaas)
-  (find-noaas-needing-generation)
-  (find-noaas-needing-sending)
+  (-find-leads-needing-noaas)
+  (-find-noaas-needing-generation)
+  (-find-noaas-needing-sending)
   )
 
 

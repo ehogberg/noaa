@@ -3,7 +3,7 @@
             [postal.core :as postal]))
 
 
-(defn _deliver-noaa
+(defn -deliver-noaa
   "Transmits a NOAA via email to a sandbox user
    (the user specified in the NOAA is ignored.)
    Useful for testing that mail does what you expect

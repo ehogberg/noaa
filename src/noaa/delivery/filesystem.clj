@@ -15,7 +15,7 @@
           (.toString (offset-date-time))))
 
 
-(defn _deliver-noaa [{:noaas/keys [noaa_text] :as noaa}]
+(defn -deliver-noaa [{:noaas/keys [noaa_text] :as noaa}]
   (spit (noaa-file-path noaa) noaa_text))
 
 

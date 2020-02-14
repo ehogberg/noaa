@@ -2,7 +2,8 @@
   (:require [camel-snake-kebab.core :as csk]
             [cheshire.core :refer [parse-string]]
             [clojure.string :as string]
-            [java-time :refer [local-date] :as time]
+            [java-time :refer [local-date
+                               offset-date-time] :as time]
             [noaa.visine :refer [get-cached-clarity-report]]
             [selmer.filters :refer [add-filter!]]
             [selmer.parser :as selmer]))
@@ -12,6 +13,10 @@
 ;; are needing to retrieve noaa message templates from a location
 ;; other than the default ($PROJECT_ROOT/resources/templates)
 (selmer/set-resource-path! (clojure.java.io/resource "templates"))
+
+
+(defn standard-date-string [d]
+  (time/format "MMM d, YYYY" d))
 
 
 (defn format-clarity-reasons
@@ -84,7 +89,27 @@
     :city "Kertzmannmouth",
     :state "Arizona",
     :zip-code "81861"},
-   :clarity-report {:clear_fraud_score 801},
+   :clarity-report 
+   {:ccr-reason-code-description
+    "(10) You have a delinquency reported on an account|(20) 
+Length of time since online payday loan opened|(15) Lack of sufficient 
+relevant revolving or bankcard information|(36) Lack of sufficient relevant 
+account information",
+    :ccr-code 532,
+    :clarity-generation-date ["2019-04-09T17:00:04.809Z"],
+    :fraud-score 532,
+    :credit-model-version "4.0",
+    :cbb-score "835",
+    :fraud-reason-code-description
+    "(10) You have a delinquency reported on an account|(20) Length of time 
+since online payday loan opened|(15) Lack of sufficient relevant revolving
+ or bankcard information|(36) Lack of sufficient relevant account information",
+    :denial-reason
+    "(BB114(#)) Lack of or negative retail check writing history|
+(BB108(*)) Number of bank account closures in last 5 years|
+(BB110(*)) Number of bank account opening attempts  in last 3 years|
+(BB113) Length of time between bank account(s) being submitted",
+    :company "FWBOpp27"}
    :noaa-text
    "(Message text truncated for code readability..."})
 
@@ -108,8 +133,7 @@
                      :application-type :lead
                      :noaa-id (:leads_noaas/id raw-noaa)
                      :lead-id (:leads/id raw-noaa)
-                     :formatted-date (time/format "MMM d, YYYY",
-                                                  (local-date))}))
+                     :formatted-date (standard-date-string (local-date))}))
 
 
 (defn set-template-type
@@ -122,18 +146,21 @@
             (template-to-use noaa)))
 
 
+
 (defn build-visine-data
   "Does the detailed extraction of relevant Clarity
    data from the (much larger) complete report."
-  [{{{report-generation-date :product_date
-      credit-model-version :pass_through_5
+  [{{{credit-model-version :pass_through_5
       company :control_file_name} :inquiry
      {ccr-score :score
       ccr-reason-code-description :reason_code_description} :clear_credit_risk
      {cbb-score :cbb_score
-      denial-reason :cbb_reason_code_description} :clear_bank_behavior}
+      denial-reason :cbb_reason_code_description} :clear_bank_behavior
+     {report-generation-at :clarity_original_pull_time} :opploans}
     :xml_response}]
-  {:clarity-generation-date report-generation-date
+  {:clarity-generation-date (-> report-generation-at
+                                offset-date-time
+                                standard-date-string)
    :fraud-score ccr-score
    :fraud-reason-code-description ccr-reason-code-description
    :ccr-code ccr-score

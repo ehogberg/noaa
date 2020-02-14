@@ -7,7 +7,7 @@
 ;; using various differing approaches.
 
 (defprotocol Visine
-  (_get-cached-clarity-report [this ssn]))
+  (-get-cached-clarity-report [this ssn]))
 
 
 
@@ -26,7 +26,7 @@
    when the ending digit is odd."
   []
   (reify Visine
-    (_get-cached-clarity-report [_ ssn]
+    (-get-cached-clarity-report [_ ssn]
       (if (re-find #"[02468]$" ssn)
         @mock-visine-data
         {}))))
@@ -50,7 +50,7 @@
    whatever facsimilie of one the configured default
    Clarity service chooses to return (for testing data"
   [ssn]
-  (_get-cached-clarity-report (make-visine) ssn))
+  (-get-cached-clarity-report (make-visine) ssn))
 
 
 
