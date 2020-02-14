@@ -44,7 +44,9 @@
 
 ;; NOAAData protocol implementation...
 
-(defn -service-details []
+(defn -service-details
+  "Prints the server and db being used."
+  []
   (format "DB-NOAAData: //%s/%s"
           (env :noaas-database-hostname)
           (env :noaas-database-name)))

@@ -16,7 +16,9 @@
                (.writeString json-writer (.toString c))))
 
 
-(defn print-service-details []
+(defn print-service-details
+  "Prints details of all active services as a debugging aid"
+  []
   (format "Service Details NOAAData:(%s) Visine:(%s) Delivery:(%s)"
           (p/service-details)
           (visine/service-details)

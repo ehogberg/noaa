@@ -3,7 +3,10 @@
             [postal.core :as postal]))
 
 
-(defn -service-details []
+(defn -service-details
+  "Returns the target mailserver, user ID credentialed against
+   the mail server and who the message is being sent as."
+  []
   (format "SMTPDelivery: server %s, user: %s, sender: %s"
           (env :smtp-delivery-host)
           (env :smtp-delivery-user)

@@ -49,7 +49,10 @@
 
 ;; Public interface for interacting with NOAA data
 
-(defn service-details []
+(defn service-details
+  "Returns a string with general information about the
+   configured NOAAData service."
+  []
   (-service-details (make-noaa-data-service)))
 
 

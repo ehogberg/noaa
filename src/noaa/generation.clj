@@ -15,10 +15,6 @@
 (selmer/set-resource-path! (clojure.java.io/resource "templates"))
 
 
-(defn standard-date-string [d]
-  (time/format "MMM d, YYYY" d))
-
-
 (defn format-clarity-reasons
   "A very simple Selmer filter function.  Takes a string
    representing a list of Clarity denial reason codes, each reason
@@ -112,6 +108,12 @@ since online payday loan opened|(15) Lack of sufficient relevant revolving
     :company "FWBOpp27"}
    :noaa-text
    "(Message text truncated for code readability..."})
+
+
+(defn standard-date-string
+  "Helper to standardize output display of dates."
+  [d]
+  (time/format "MMM d, YYYY" d))
 
 
 (defn template-to-use

@@ -47,7 +47,9 @@
 ;; Public interface for retrieving Clarity reports as
 ;; part of noaa generation.
 
-(defn service-details []
+(defn service-details
+  "Returns details about the active Visine service."
+  []
   (-service-details (make-visine)))
 
 

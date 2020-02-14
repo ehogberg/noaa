@@ -66,7 +66,10 @@
 
 ;; Delivery functions for public (out of ns) usage.
 
-(defn service-details []
+(defn service-details
+  "Returns a string documenting details of the currently
+   active delivery service."
+  []
   (-service-details (make-delivery-service)))
 
 
