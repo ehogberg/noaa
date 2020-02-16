@@ -47,10 +47,10 @@
 - Connect to Clarity for realz.
 - Align the lead db schema with reality.
 - Handle db exceptions gracefully
-- Write some basic sanity tests that involve setting up/tearing down info.
+- ~~Write some basic sanity tests that involve setting up/tearing down info.~~
 - Get the actual text used for the templates
 - Include originating bank as a qualifier for template choice
-- Identify what we actually need from Clarity and pluck it from the report as part of attach-clarity-report in generation.
+- ~~Identify what we actually need from Clarity and pluck it from the report as part of attach-clarity-report in generation.~~
 
 
 
