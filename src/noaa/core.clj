@@ -1,13 +1,16 @@
 (ns noaa.core
   (:require [cheshire.core :refer [generate-string]]
             [cheshire.generate :refer [add-encoder]]
+            [clojure.string :refer [replace]]
             [environ.core :refer [env]]
             [noaa.generation :as gen]
             [noaa.persistence :as p]
             [noaa.delivery :as delivery]
+            [noaa.logging :refer [timbre-output-with-job-id]]
             [noaa.visine :as visine]
-            [taoensso.timbre :refer [info debug error warn merge-config!
-                                     with-context]])
+            [taoensso.timbre :refer [info debug error warn
+                                     merge-config! with-context ]]
+            [clojure.string :as str])
   (:import java.util.UUID)
   (:gen-class))
 
@@ -85,11 +88,11 @@
       (error "General exception encountered while generating NOAAS:"
              (with-out-str (clojure.stacktrace/print-stack-trace e))))
     (finally
-      (info "NOAA generation complete")))
+      (info "NOAA generation complete"))))
 
 
-  (defn send-noaas
-    "The final step of noaa processing.  All noaas generated but not successfully
+(defn send-noaas
+  "The final step of noaa processing.  All noaas generated but not successfully
    delivered to recipients as part of a prior delivery job have their messages
    delivered (typically by email) to their intended recipient."
     []
@@ -107,12 +110,14 @@
             (warn "Problem while sending NOAA" id "("
                   (.getMessage e)
                   ");"
-                  "will attempt to re-send as part of the next delivery pass."))))
+                  "will attempt to re-send as part 
+                   of the next delivery pass."))))
       (catch Exception e
         (error "Exception encountered while sending NOAAS:"
                (with-out-str (clojure.stacktrace/print-stack-trace e))))
       (finally
-        (info "NOAA delivery complete")))))
+        (info "NOAA delivery complete"))))
+
 
 
 ;; Demo functions.
@@ -136,21 +141,16 @@
 
 
 
-(defn timbre-output-with-tx-id
-  "Somewhat odorous attempt to attach a constant transaction id
-   across Timbre logging output.  FIXME please; there's got to
-   be a better way of doing this...  Boy, it would be nice if
-   this sorta-fabulous Timbre library were documented a wee bit
-   more practically."
-  [{{:keys [tx-id]} :context :as event}]
-  (format "{%s} %s" tx-id
-          (taoensso.timbre/default-output-fn event)))
+(defn- job-id []
+  (-> (UUID/randomUUID)
+      .toString
+      (replace #"-" "")))
 
 
 (defn -main
   [action & rest]
-  (with-context {:tx-id (UUID/randomUUID)}
-    (merge-config! {:output-fn timbre-output-with-tx-id
+  (with-context {:job-id (job-id)}
+    (merge-config! {:output-fn timbre-output-with-job-id
                     :level (or (-> (env :log-level)
                                    (keyword))
                                :info)})
