@@ -38,7 +38,7 @@
         id (UUID/randomUUID)]
     (jdbc/execute! @ds
                    ["insert into leads
-                    (id,request,status,version,ssn)
+                    (id,request,response_code,version,ssn)
                     values (?, ?::json,623,'5',?)"
                     id request ssn])))
 
@@ -117,7 +117,7 @@
   (sql/query @ds ["select lead_id
                    from leads_noaas
                    where noaa_identified_at is null
-                     and lead_status = 623
+                     and response_code = 623
                      and lead_created_date >= ?"
                   (local-date
                    "yyyy-MM-dd"
