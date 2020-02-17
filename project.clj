@@ -29,4 +29,15 @@
                   :subprotocol "postgresql"
                   :subname "//localhost/noaa_dev"}}
   :target-path "target/%s"
+  :test-selectors {:default (complement :integration)
+                   :integration :integration}
   :profiles {:uberjar {:aot :all}})
+
+
+
+
+
+
+
+
+

@@ -35,6 +35,10 @@
 
 
 
+(deftest ^:integration generate-integration-test
+  (testing "Is an integration test"))
+
+
 
 
 

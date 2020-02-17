@@ -3,14 +3,13 @@
             [cheshire.generate :refer [add-encoder]]
             [clojure.string :refer [replace]]
             [environ.core :refer [env]]
-            [noaa.generation :as gen]
-            [noaa.persistence :as p]
             [noaa.delivery :as delivery]
+            [noaa.generation :as gen]
             [noaa.logging :refer [timbre-output-with-job-id]]
+            [noaa.persistence :as p]
             [noaa.visine :as visine]
             [taoensso.timbre :refer [info debug error warn
-                                     merge-config! with-context ]]
-            [clojure.string :as str])
+                                     merge-config! with-context ]])
   (:import java.util.UUID)
   (:gen-class))
 
@@ -29,9 +28,6 @@
           (p/service-details)
           (visine/service-details)
           (delivery/service-details)))
-
-
-
 
 
 (defn identify-noaas
@@ -141,7 +137,12 @@
 
 
 
-(defn- job-id []
+(defn- job-id
+  "Generates a unique job id, useful for binding all output
+   from a particular task execution together in a single
+   searchable term.  The ID itself is nothing more than a
+   UUID in string form with dashes removed."
+  []
   (-> (UUID/randomUUID)
       .toString
       (replace #"-" "")))
