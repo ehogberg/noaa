@@ -20,23 +20,12 @@
   "A very simple Selmer filter function.  Takes a string
    representing a list of Clarity denial reason codes, each reason
    deliminated by a | char, split along the | and add a newline
-   between each item.
-
-   Boy, oh boy, splitting pipe characters are weird.  You'd
-   think you could do something simple like | or even escaping
-   the pipe to be regex friendly, \\|   But nope, split no like-ee.
-   To make split work correctly with a pipe, seems you need to
-   build a pattern literally from the ground up using the low
-   level java Pattern class.  Boo.  But still more convenient
-   than the other options."
+   between each item."
   [s]
-  (as-> s v
-    (string/split
-     v
-     (re-pattern (java.util.regex.Pattern/quote "|")))
-    (string/join "\n" v)))
+  (string/replace s "|" "\n"))
 
 (add-filter! :format-clarity-reasons format-clarity-reasons)
+
 
 
 ;; Useful for starting a generation in the repl.
