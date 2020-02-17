@@ -51,10 +51,19 @@
 - Get the actual text used for the templates
 - Include originating bank as a qualifier for template choice
 - ~~Identify what we actually need from Clarity and pluck it from the report as part of attach-clarity-report in generation.~~
+- ~~Move Migratus operations into a setting that honors environment configs.~~
 
 
+### 4:  Build a NOAA production environment.
+- create a production node
+- Create secrets for production node
+- connect to production db
+- Create noaa table in production 
+- define a production test
+- review production test
 
-### 4: Build a NOAA test environment
+
+### 5: Build a NOAA test environment
 - Create a test node
 - Create secrets for test environment
 - Connect to test database
@@ -65,18 +74,6 @@
 - define and write integration tests
 
 
-
-### 5:  Build a NOAA production environment.
-- create a production node
-- Create secrets for production node
-- connect to production db
-- Create noaa table in production 
-- define a production test
-- review production test
-
-
-
 ### BACKLOG
 - Add a rolling window to the identify-leads-needing-noaas query so we don't do needless retrievals.
-- Move Migratus operations into a setting that honors environment configs.
 - Store delivery status as part of NOAA during delivery pass
