@@ -27,7 +27,11 @@
     :noaas/noaa_transmitted_at nil,
     :leads/response_code nil,
     :leads/request
-    "{\"email\":\"Aurelia86@example.com\",\"socialSecurityNumber\":\"123456789\",\"personalInfo\":{\"firstName\":\"Lisa\",\"lastName\":\"Marvin\",\"address\":{\"streetAddress\":\"54872 Collier Summit\",\"city\":\"Kertzmannmouth\",\"zip\":\"81861\",\"countryCode\":\"US\"}},\"stateCode\":\"Arizona\"}",
+    "{\"email\":\"Aurelia86@example.com\",\"socialSecurityNumber\":\"123456789\"
+,\"personalInfo\":{\"firstName\":\"Lisa\",\"lastName\":\"Marvin\",
+\"address\":{\"streetAddress\":\"54872 Collier Summit\",
+\"city\":\"Kertzmannmouth\",\"zip\":\"81861\",\"countryCode\":\"US\"}},
+\"stateCode\":\"Arizona\"}",
     :leads/status 623,
     :leads/id #uuid "f35eb07e-e95a-4973-977d-495b05d27fa9",
     :noaas/noaa_text nil}})
@@ -86,13 +90,3 @@
   (assoc-in lead-noaa-ready-for-message-generation
             [:meta :template-type]
             "lead_clarity_rejection_with_clarity_report.txt"))
-
-
-
-
-
-
-
-
-
-

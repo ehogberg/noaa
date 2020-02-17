@@ -1,7 +1,7 @@
 (ns noaa.core
   (:require [cheshire.core :refer [generate-string]]
             [cheshire.generate :refer [add-encoder]]
-            [clojure.string :refer [replace]]
+            [clojure.string :as str]
             [environ.core :refer [env]]
             [noaa.delivery :as delivery]
             [noaa.generation :as gen]
@@ -14,11 +14,12 @@
   (:gen-class))
 
 
+
 ;; Cheshire chokes on the newer date types;
-;; provide an encoder to ease its pain 
+;; provide an encoder to ease its pain
 (add-encoder java.time.LocalDate
              (fn [c json-writer]
-               (.writeString json-writer (.toString c))))
+               (.writeString json-writer (str c))))
 
 
 (defn print-service-details
@@ -106,7 +107,7 @@
             (warn "Problem while sending NOAA" id "("
                   (.getMessage e)
                   ");"
-                  "will attempt to re-send as part 
+                  "will attempt to re-send as part
                    of the next delivery pass."))))
       (catch Exception e
         (error "Exception encountered while sending NOAAS:"
@@ -145,11 +146,11 @@
   []
   (-> (UUID/randomUUID)
       .toString
-      (replace #"-" "")))
+      (str/replace #"-" "")))
 
 
 (defn -main
-  [action & rest]
+  [action & remaining]
   (with-context {:job-id (job-id)}
     (merge-config! {:output-fn timbre-output-with-job-id
                     :level (or (-> (env :log-level)
@@ -162,19 +163,10 @@
       "gen-some-leads" (gen-some-leads)
       "demo-noaas" (demo-noaas)
       (error "Unknown action:" action))))
-  
+
 
 (comment
   (identify-noaas)
   (generate-noaas)
   (send-noaas)
   )
-
-
-
-
-
-
-
-
-

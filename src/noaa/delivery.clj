@@ -4,6 +4,7 @@
             [noaa.delivery.smtp :as smtp]))
 
 
+
 (defprotocol Delivery
   "Defines a protocol for transporting NOAA content
    to its intended recipient."
@@ -79,13 +80,3 @@
    the delivery system configured as the default one."
   [noaa]
   (-deliver-noaa (make-delivery-service) noaa))
-
-
-
-
-
-
-
-
-
-

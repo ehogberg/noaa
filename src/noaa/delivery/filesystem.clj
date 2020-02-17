@@ -12,7 +12,7 @@
   (format "%s/%s_%s.txt"
           (noaa-file-path-prefix)
           id
-          (.toString (offset-date-time))))
+          (str (offset-date-time))))
 
 
 (defn -service-details
@@ -29,15 +29,3 @@
   current datetime to form a unique filename."
   [{:noaas/keys [noaa_text] :as noaa}]
   (spit (noaa-file-path noaa) noaa_text))
-
-
-
-
-
-
-
-
-
-
-
-

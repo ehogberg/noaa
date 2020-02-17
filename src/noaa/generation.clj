@@ -9,6 +9,7 @@
             [selmer.parser :as selmer]))
 
 
+
 ;; Important: don't monkey with this unless you grok Selmer and
 ;; are needing to retrieve noaa message templates from a location
 ;; other than the default ($PROJECT_ROOT/resources/templates)
@@ -20,7 +21,7 @@
    representing a list of Clarity denial reason codes, each reason
    deliminated by a | char, split along the | and add a newline
    between each item.
-  
+
    Boy, oh boy, splitting pipe characters are weird.  You'd
    think you could do something simple like | or even escaping
    the pipe to be regex friendly, \\|   But nope, split no like-ee.
@@ -32,7 +33,7 @@
   (as-> s v
     (string/split
      v
-     (re-pattern (. java.util.regex.Pattern quote "|")))
+     (re-pattern (java.util.regex.Pattern/quote "|")))
     (string/join "\n" v)))
 
 (add-filter! :format-clarity-reasons format-clarity-reasons)
@@ -61,7 +62,11 @@
     :noaas/noaa_transmitted_at nil,
     :leads/response_code nil,
     :leads/request
-    "{\"email\":\"Aurelia86@example.com\",\"socialSecurityNumber\":\"123456780\",\"personalInfo\":{\"firstName\":\"Lisa\",\"lastName\":\"Marvin\",\"address\":{\"streetAddress\":\"54872 Collier Summit\",\"city\":\"Kertzmannmouth\",\"zip\":\"81861\",\"countryCode\":\"US\"}},\"stateCode\":\"Arizona\"}",
+    "{\"email\":\"Aurelia86@example.com\",
+\"socialSecurityNumber\":\"123456780\",\"personalInfo\":
+{\"firstName\":\"Lisa\",\"lastName\":\"Marvin\",\"address\":
+{\"streetAddress\":\"54872 Collier Summit\",\"city\":\"Kertzmannmouth\",
+\"zip\":\"81861\",\"countryCode\":\"US\"}},\"stateCode\":\"Arizona\"}"
     :leads/status 623,
     :leads/id #uuid "f35eb07e-e95a-4973-977d-495b05d27fa9",
     :noaas/noaa_text nil}})
@@ -85,11 +90,11 @@
     :city "Kertzmannmouth",
     :state "Arizona",
     :zip-code "81861"},
-   :clarity-report 
+   :clarity-report
    {:ccr-reason-code-description
-    "(10) You have a delinquency reported on an account|(20) 
-Length of time since online payday loan opened|(15) Lack of sufficient 
-relevant revolving or bankcard information|(36) Lack of sufficient relevant 
+    "(10) You have a delinquency reported on an account|(20)
+Length of time since online payday loan opened|(15) Lack of sufficient
+relevant revolving or bankcard information|(36) Lack of sufficient relevant
 account information",
     :ccr-code 532,
     :clarity-generation-date ["2019-04-09T17:00:04.809Z"],
@@ -97,7 +102,7 @@ account information",
     :credit-model-version "4.0",
     :cbb-score "835",
     :fraud-reason-code-description
-    "(10) You have a delinquency reported on an account|(20) Length of time 
+    "(10) You have a delinquency reported on an account|(20) Length of time
 since online payday loan opened|(15) Lack of sufficient relevant revolving
  or bankcard information|(36) Lack of sufficient relevant account information",
     :denial-reason
@@ -197,7 +202,7 @@ since online payday loan opened|(15) Lack of sufficient relevant revolving
   (try
     (.getValue v)
     (catch Exception e
-      (.toString v))))
+      (str v))))
 
 
 (defn request-from-lead
@@ -212,7 +217,7 @@ since online payday loan opened|(15) Lack of sufficient relevant revolving
           {:keys [street-address city zip]} :address} :personal-info
          :as lead_request}
         (parse-string
-         (extract-json-text (get-in lead [:raw-noaa :leads/request])) 
+         (extract-json-text (get-in lead [:raw-noaa :leads/request]))
          (fn [k] (csk/->kebab-case-keyword k)))]
      {:email email
       :ssn   social-security-number
@@ -256,7 +261,7 @@ since online payday loan opened|(15) Lack of sufficient relevant revolving
    comment string; however anyone intending to support the noaa system is
    well advised to familiarize themselve with it.  A good starting resource
    is the project homepage (https://github.com/yogthos/Selmer)"
-  [{{:keys [template-type]} :meta 
+  [{{:keys [template-type]} :meta
                            :as noaa}]
   (assoc noaa :noaa-text
          (selmer/render-file template-type noaa)))
@@ -291,7 +296,7 @@ since online payday loan opened|(15) Lack of sufficient relevant revolving
       set-template-type
       generate-noaa-text))
 
- 
+
 (comment
   (-> std-noaa-db-data
       attach-meta
@@ -302,10 +307,3 @@ since online payday loan opened|(15) Lack of sufficient relevant revolving
       )
   (process-noaa-generation std-noaa-db-data)
   )
-
-
-
-
-
-
-

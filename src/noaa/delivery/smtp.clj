@@ -31,13 +31,3 @@
            :to (env :smtp-delivery-sandbox-recipient)
            :subject "Notice of adverse action on a recent application."
            :body noaa_text})))
-
-
-
-
-
-
-
-
-
-

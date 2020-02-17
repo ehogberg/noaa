@@ -5,6 +5,7 @@
             [nearinfinity.clj-faker.internet :as inet]))
 
 
+
 ;; Thank you, (https://clojuredocs.org/clojure.core/merge)...
 (defn deep-merge [a & maps]
   (if (map? a)
@@ -47,29 +48,12 @@
      :version "5"
      :request (-> {:socialSecurityNumber ssn}
                   fake-lead-api-request
-                  generate-string) 
+                  generate-string)
      :response_code 200
      :ssn ssn}))
 
 
 (comment
   (fake-lead)
-  (take 5 (repeatedly fake-lead))
+  (repeatedly 5 fake-lead)
   )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

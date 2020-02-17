@@ -8,6 +8,7 @@
   (:import (java.util UUID)))
 
 
+
 (def ds-options {:pool-name     "lz-pool"
                  :adapter       "postgresql"
                  :server-name   (env :noaas-database-hostname)
@@ -70,7 +71,7 @@
    message text, the sending destination and template
    type used to generate the message.  Also updates
    the noaa_generated_at attribute, which means that
-   the noaa will be included in the next send-noaas 
+   the noaa will be included in the next send-noaas
    processing run."
   [noaa-id send-to noaa-text template-type noaa-data]
   (jdbc/execute! @ds
@@ -149,12 +150,3 @@
   (-find-noaas-needing-generation)
   (-find-noaas-needing-sending)
   )
-
-
-
-
-
-
-
-
-

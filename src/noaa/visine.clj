@@ -60,16 +60,3 @@
    Clarity service chooses to return (for testing data"
   [ssn]
   (-get-cached-clarity-report (make-visine) ssn))
-
-
-
-
-
-
-
-
-
-
-
-
-
