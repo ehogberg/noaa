@@ -45,20 +45,23 @@
 ### 3.5: Weaponize What We Have So Far
 - ~~Store data used to generate message in noaa table.~~
 - Connect to Clarity for realz.
-- Align the lead db schema with reality.
-- Handle db exceptions gracefully
+- ~~Align the lead db schema with reality.~~
+- ~~Handle db exceptions gracefully~~
 - ~~Write some basic sanity tests that involve setting up/tearing down info.~~
 - Get the actual text used for the templates
 - Include originating bank as a qualifier for template choice
 - ~~Identify what we actually need from Clarity and pluck it from the report as part of attach-clarity-report in generation.~~
 - ~~Move Migratus operations into a setting that honors environment configs.~~
+- Read business-rules-denied leads from SF and include them in the identification pass.
 
 
 ### 4:  Build a NOAA production environment.
 - create a production node
+- create a production db
+- get lead data etl'ed into the production db
 - Create secrets for production node
 - connect to production db
-- Create noaa table in production 
+- Create noaa table in production
 - define a production test
 - review production test
 
@@ -68,7 +71,7 @@
 - Create secrets for test environment
 - Connect to test database
 - Create noaa lead table in test db
-- Write a job to deploy code to the test node 
+- Write a job to deploy code to the test node
 - integrate with sumo
 - Integrate with sentry
 - define and write integration tests

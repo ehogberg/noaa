@@ -102,7 +102,7 @@ account information",
 (BB108(*)) Number of bank account closures in last 5 years|
 (BB110(*)) Number of bank account opening attempts  in last 3 years|
 (BB113) Length of time between bank account(s) being submitted",
-    :company "FWBOpp27"}
+    :company :finwise}
    :noaa-text
    "(Message text truncated for code readability..."})
 
@@ -150,9 +150,9 @@ account information",
   "Does the detailed extraction of relevant Clarity
    data from the (much larger) complete report."
   [{{{credit-model-version :pass_through_5
-      company :control_file_name} :inquiry
-     {ccr-score :score
-      ccr-reason-code-description :reason_code_description} :clear_credit_risk
+      control-file-name :control_file_name} :inquiry
+     {fraud-score :score
+      fraud-reason-code-description :reason_code_description} :clear_credit_risk
      {cbb-score :cbb_score
       denial-reason :cbb_reason_code_description} :clear_bank_behavior
      {report-generation-at :clarity_original_pull_time} :opploans}
@@ -160,14 +160,14 @@ account information",
   {:clarity-generation-date (-> report-generation-at
                                 offset-date-time
                                 standard-date-string)
-   :fraud-score ccr-score
-   :fraud-reason-code-description ccr-reason-code-description
-   :ccr-code ccr-score
-   :ccr-reason-code-description ccr-reason-code-description
+   :fraud-score fraud-score
+   :fraud-reason-code-description fraud-reason-code-description
    :credit-model-version credit-model-version
    :cbb-score cbb-score
    :denial-reason denial-reason
-   :company company})
+   :company (if (string/starts-with? control-file-name "FWB")
+              :finwise
+              :core)})
 
 
 (defn attach-clarity-report
