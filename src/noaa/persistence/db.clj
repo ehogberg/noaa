@@ -74,31 +74,32 @@
    the noaa will be included in the next send-noaas
    processing run."
   [noaa-id send-to noaa-text template-type noaa-data]
-  (jdbc/with-transaction [tx @ds]
-    (jdbc/execute! tx
-                   ["update noaas
+  (let [generated-at (offset-date-time)]
+    (jdbc/with-transaction [tx @ds]
+      (jdbc/execute! tx
+                     ["update noaas
                    set noaa_text = ?, noaa_template_type = ?,
                        noaa_destination_email = ?,
                        noaa_generated_at = ?,
                        updated_at = ?,
                        noaa_generation_data = ?::json
                    where id = ?"
-                    noaa-text template-type
-                    send-to (offset-date-time)
-                    (offset-date-time) noaa-data
-                    noaa-id])
-    (jdbc/execute! tx
-                   ["insert into noaa_generation_history(
+                      noaa-text template-type
+                      send-to generated-at
+                      (offset-date-time) noaa-data
+                      noaa-id])
+      (jdbc/execute! tx
+                     ["insert into noaa_generation_history(
                      id, noaa_id, noaa_generated_at,
                      noaa_text, noaa_template_type,
                      noaa_generation_data)
                    values (?,?,?,?,?,?::json)"
-                    (UUID/randomUUID)
-                    noaa-id
-                    (offset-date-time)
-                    noaa-text
-                    template-type
-                    noaa-data])))
+                      (UUID/randomUUID)
+                      noaa-id
+                      generated-at
+                      noaa-text
+                      template-type
+                      noaa-data]))))
 
 
 (defn -update-noaa-as-sent!
@@ -106,11 +107,18 @@
    the noaa with some audit information relating to
    delivery of the noaa message.  After this update,
    the noaa processing is considered complete."
-  [noaa-id]
-  (sql/update! @ds :noaas
-               {:noaa_transmitted_at (offset-date-time)
-                :updated_at (offset-date-time)}
-               {:id noaa-id}))
+  [noaa-id sent-to]
+  (let [transmitted-at (offset-date-time)]
+    (jdbc/with-transaction [tx @ds]
+      (sql/update! tx :noaas
+                   {:noaa_transmitted_at transmitted-at
+                    :updated_at (offset-date-time)}
+                   {:id noaa-id})
+      (sql/insert! tx :noaa_delivery_history
+                   {:id (UUID/randomUUID)
+                    :noaa_id noaa-id
+                    :noaa_transmitted_at transmitted-at
+                    :noaa_destination_email sent-to}))))
 
 
 (defn -find-leads-needing-noaas
@@ -162,4 +170,5 @@
   (-find-leads-needing-noaas)
   (-find-noaas-needing-generation)
   (-find-noaas-needing-sending)
+  (find-noaa (UUID/fromString "86159cba-778e-41a4-8b39-2a03359bb0db"))
   )

@@ -9,7 +9,7 @@
   (-update-noaa-text! [this noaa-id send-to
                       noaa-text template-type
                       noaa-data])
-  (-update-noaa-as-sent! [this noaa-id])
+  (-update-noaa-as-sent! [this noaa-id sent-to])
   (-find-leads-needing-noaas [this])
   (-find-noaas-needing-generation [this])
   (-find-noaas-needing-sending [this]))
@@ -29,8 +29,8 @@
                         noaa-data]
       (db/-update-noaa-text! noaa-id send-to noaa-text
                              template-type noaa-data ))
-    (-update-noaa-as-sent! [_ noaa-id]
-      (db/-update-noaa-as-sent! noaa-id))
+    (-update-noaa-as-sent! [_ noaa-id sent-to]
+      (db/-update-noaa-as-sent! noaa-id sent-to))
     (-find-leads-needing-noaas [_]
       (db/-find-leads-needing-noaas))
     (-find-noaas-needing-generation [_]
@@ -73,8 +73,8 @@
 (defn update-noaa-as-sent!
   "Marks the NOAA as having been successfully sent during
    a delivery processing."
-  [noaa-id]
-  (-update-noaa-as-sent! (make-noaa-data-service) noaa-id))
+  [noaa-id sent-to]
+  (-update-noaa-as-sent! (make-noaa-data-service) noaa-id sent-to))
 
 
 (defn find-leads-needing-noaas

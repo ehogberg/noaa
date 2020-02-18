@@ -81,9 +81,11 @@
     :zip-code "81861"},
    :clarity-report
    {:ccr-reason-code-description
-    "(10) You have a delinquency reported on an account|(20)
-Length of time since online payday loan opened|(15) Lack of sufficient
-relevant revolving or bankcard information|(36) Lack of sufficient relevant
+    "(10) You have a delinquency reported on an account|
+(20) Length of time since online payday loan opened|
+(15) Lack of sufficient
+relevant revolving or bankcard information|
+(36) Lack of sufficient relevant
 account information",
     :ccr-code 532,
     :clarity-generation-date ["2019-04-09T17:00:04.809Z"],
@@ -91,9 +93,10 @@ account information",
     :credit-model-version "4.0",
     :cbb-score "835",
     :fraud-reason-code-description
-    "(10) You have a delinquency reported on an account|(20) Length of time
-since online payday loan opened|(15) Lack of sufficient relevant revolving
- or bankcard information|(36) Lack of sufficient relevant account information",
+    "(10) You have a delinquency reported on an account|
+(20) Length of time since online payday loan opened|
+(15) Lack of sufficient relevant revolving or bankcard information|
+(36) Lack of sufficient relevant account information",
     :denial-reason
     "(BB114(#)) Lack of or negative retail check writing history|
 (BB108(*)) Number of bank account closures in last 5 years|

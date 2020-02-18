@@ -96,12 +96,13 @@
     (try
       (info "Beginning NOAA delivery")
       (info (print-service-details))
-      (doseq [{:noaas/keys [id] :as noaa} (p/find-noaas-needing-sending)]
+      (doseq [{:noaas/keys [id noaa_destination_email]
+               :as noaa} (p/find-noaas-needing-sending)]
         (info "NOAA" id "needs to be sent." )
         (try
           (let [{:keys [delivery-status]} (delivery/deliver-noaa noaa)]
             (info "NOAA" id " sent; delivery status:" delivery-status)
-            (p/update-noaa-as-sent! id)
+            (p/update-noaa-as-sent! id noaa_destination_email)
             (info "NOAA status updated"))
           (catch Exception e
             (warn "Problem while sending NOAA" id "("
