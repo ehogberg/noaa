@@ -74,18 +74,31 @@
    the noaa will be included in the next send-noaas
    processing run."
   [noaa-id send-to noaa-text template-type noaa-data]
-  (jdbc/execute! @ds
-                 ["update noaas
+  (jdbc/with-transaction [tx @ds]
+    (jdbc/execute! tx
+                   ["update noaas
                    set noaa_text = ?, noaa_template_type = ?,
                        noaa_destination_email = ?,
                        noaa_generated_at = ?,
                        updated_at = ?,
                        noaa_generation_data = ?::json
                    where id = ?"
-                  noaa-text template-type
-                  send-to (offset-date-time)
-                  (offset-date-time) noaa-data
-                  noaa-id]))
+                    noaa-text template-type
+                    send-to (offset-date-time)
+                    (offset-date-time) noaa-data
+                    noaa-id])
+    (jdbc/execute! tx
+                   ["insert into noaa_generation_history(
+                     id, noaa_id, noaa_generated_at,
+                     noaa_text, noaa_template_type,
+                     noaa_generation_data)
+                   values (?,?,?,?,?,?::json)"
+                    (UUID/randomUUID)
+                    noaa-id
+                    (offset-date-time)
+                    noaa-text
+                    template-type
+                    noaa-data])))
 
 
 (defn -update-noaa-as-sent!
